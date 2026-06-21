@@ -42,6 +42,7 @@ const state = {
   score: 0,
   mistakes: 0,
   selectedIngredients: [],
+  pendingIngredients: [],
   orders: [],
   timerId: null,
   cookingTimerId: null,
@@ -112,6 +113,7 @@ function startGame() {
   state.score = 0;
   state.mistakes = 0;
   state.selectedIngredients = [];
+  state.pendingIngredients = [];
   state.orders = createOrders(5);
   state.cookingLeft = 0;
 
@@ -146,25 +148,43 @@ function createRandomOrder() {
   };
 }
 
-function addIngredient(ingredientId, sourceButton) {
+async function addIngredient(ingredientId, sourceButton) {
   if (!state.isPlaying || state.isCooking) {
     return;
   }
 
-  if (state.selectedIngredients.includes(ingredientId)) {
+  if (state.selectedIngredients.includes(ingredientId) || state.pendingIngredients.includes(ingredientId)) {
     setMessage("이미 냄비에 들어간 재료입니다.", "error");
     return;
   }
 
-  state.selectedIngredients.push(ingredientId);
+  state.pendingIngredients.push(ingredientId);
   state.cooked = false;
   updateDisplay();
-  animateIngredientToPot(sourceButton, ingredientId);
-  setMessage(`${getIngredientName(ingredientId)}을(를) 냄비에 넣었습니다.`);
+  setMessage(`${getIngredientName(ingredientId)}이(가) 냄비로 날아가는 중입니다.`);
+
+  await animateIngredientToPot(sourceButton, ingredientId);
+
+  state.pendingIngredients = state.pendingIngredients.filter((id) => id !== ingredientId);
+
+  if (!state.isPlaying) {
+    updateDisplay();
+    return;
+  }
+
+  state.selectedIngredients.push(ingredientId);
+  triggerPotReceive();
+  updateDisplay();
+  setMessage(`${getIngredientName(ingredientId)}이(가) 냄비에 담겼습니다.`);
 }
 
 function clearPot() {
   if (!state.isPlaying || state.isCooking) {
+    return;
+  }
+
+  if (hasPendingIngredients()) {
+    setMessage("재료가 냄비에 들어가는 중입니다. 잠시만 기다려주세요.", "error");
     return;
   }
 
@@ -174,6 +194,11 @@ function clearPot() {
 
 function startCooking() {
   if (!state.isPlaying || state.isCooking) {
+    return;
+  }
+
+  if (hasPendingIngredients()) {
+    setMessage("재료가 냄비에 들어가는 중입니다. 잠시만 기다려주세요.", "error");
     return;
   }
 
@@ -214,6 +239,11 @@ function finishCooking() {
 
 function packCurrentOrder() {
   if (!state.isPlaying || state.isCooking) {
+    return;
+  }
+
+  if (hasPendingIngredients()) {
+    setMessage("재료가 냄비에 완전히 담긴 뒤 포장하세요.", "error");
     return;
   }
 
@@ -284,6 +314,7 @@ function sameIngredients(selected, required) {
 
 function resetPot() {
   state.selectedIngredients = [];
+  state.pendingIngredients = [];
   state.cooked = false;
   updateDisplay();
 }
@@ -350,7 +381,9 @@ function renderPotContents() {
 
 function syncIngredientButtons() {
   document.querySelectorAll(".ingredient-button").forEach((button) => {
-    const isSelected = state.selectedIngredients.includes(button.dataset.ingredientId);
+    const isSelected =
+      state.selectedIngredients.includes(button.dataset.ingredientId) ||
+      state.pendingIngredients.includes(button.dataset.ingredientId);
     button.classList.toggle("selected", isSelected);
   });
 }
@@ -380,6 +413,7 @@ function endGame(reason) {
   stopTimers();
   state.isPlaying = false;
   state.isCooking = false;
+  state.pendingIngredients = [];
   elements.burnerButton.classList.remove("active");
   elements.steam.classList.remove("active");
   setControlsEnabled(false);
@@ -427,13 +461,13 @@ function createIngredientVisual(ingredientId) {
 
 function animateIngredientToPot(sourceButton, ingredientId) {
   if (!sourceButton || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    return;
+    return Promise.resolve();
   }
 
   const sourceVisual = sourceButton.querySelector(".ingredient-visual");
 
   if (!sourceVisual) {
-    return;
+    return Promise.resolve();
   }
 
   const start = sourceVisual.getBoundingClientRect();
@@ -448,31 +482,47 @@ function animateIngredientToPot(sourceButton, ingredientId) {
   const targetX = target.left + target.width / 2 - start.left - start.width / 2;
   const targetY = target.top + target.height / 2 - start.top - start.height / 2;
 
-  const animation = flyer.animate(
-    [
+  return new Promise((resolve) => {
+    const animation = flyer.animate(
+      [
+        {
+          transform: "translate(0, 0) scale(1)",
+          opacity: 1
+        },
+        {
+          transform: `translate(${targetX * 0.45}px, ${targetY - 110}px) scale(1.2) rotate(-16deg)`,
+          opacity: 1,
+          offset: 0.48
+        },
+        {
+          transform: `translate(${targetX}px, ${targetY}px) scale(0.42) rotate(22deg)`,
+          opacity: 0.15
+        }
+      ],
       {
-        transform: "translate(0, 0) scale(1)",
-        opacity: 1
-      },
-      {
-        transform: `translate(${targetX * 0.55}px, ${targetY - 90}px) scale(1.15) rotate(-12deg)`,
-        opacity: 1,
-        offset: 0.58
-      },
-      {
-        transform: `translate(${targetX}px, ${targetY}px) scale(0.56) rotate(18deg)`,
-        opacity: 0.35
+        duration: 720,
+        easing: "cubic-bezier(0.2, 0.82, 0.22, 1)"
       }
-    ],
-    {
-      duration: 580,
-      easing: "cubic-bezier(0.22, 0.78, 0.28, 1)"
-    }
-  );
+    );
 
-  animation.addEventListener("finish", () => {
-    flyer.remove();
+    const finish = () => {
+      flyer.remove();
+      resolve();
+    };
+
+    animation.addEventListener("finish", finish, { once: true });
+    animation.addEventListener("cancel", finish, { once: true });
   });
+}
+
+function triggerPotReceive() {
+  elements.potContents.classList.remove("receiving");
+  void elements.potContents.offsetWidth;
+  elements.potContents.classList.add("receiving");
+}
+
+function hasPendingIngredients() {
+  return state.pendingIngredients.length > 0;
 }
 
 init();

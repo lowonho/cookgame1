@@ -515,6 +515,25 @@ h1 {
   font-weight: 800;
 }
 
+.pot-contents.receiving {
+  animation: potReceive 260ms ease-out;
+}
+
+@keyframes potReceive {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  45% {
+    transform: scale(1.04);
+    filter: brightness(1.2);
+  }
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+}
+
 .pot-tag {
   display: inline-flex;
   align-items: center;
