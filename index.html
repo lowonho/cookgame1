@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>찌개 포장 게임</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="game-shell">
+    <section class="top-panel">
+      <div>
+        <p class="eyebrow">1분 안에 주문을 처리하세요</p>
+        <h1>찌개 포장 게임</h1>
+      </div>
+
+      <div class="status-board" aria-label="게임 상태">
+        <div class="status-item">
+          <span>남은 시간</span>
+          <strong id="timeLeft">60</strong>
+        </div>
+        <div class="status-item">
+          <span>성공</span>
+          <strong id="score">0</strong>
+        </div>
+        <div class="status-item danger">
+          <span>실패</span>
+          <strong><span id="mistakes">0</span>/3</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="order-panel">
+      <div class="current-order">
+        <span class="label">현재 주문</span>
+        <strong id="currentOrder">게임 시작을 눌러주세요</strong>
+      </div>
+      <div class="order-list" id="orderQueue" aria-label="대기 주문"></div>
+    </section>
+
+    <section class="play-area">
+      <aside class="ingredients-panel">
+        <div class="panel-title">
+          <h2>재료</h2>
+          <button id="clearPotButton" class="subtle-button" type="button">냄비 비우기</button>
+        </div>
+        <div class="ingredients-grid" id="ingredients"></div>
+      </aside>
+
+      <section class="kitchen-panel">
+        <div class="pot-area">
+          <div class="steam" id="steam" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="pot" aria-label="냄비">
+            <div class="pot-rim"></div>
+            <div class="pot-body">
+              <div id="potContents" class="pot-contents">재료를 클릭해서 넣으세요</div>
+            </div>
+          </div>
+        </div>
+
+        <button id="burnerButton" class="burner" type="button" aria-label="가스버너 켜기">
+          <span class="burner-top"></span>
+          <span class="flame"></span>
+          <span id="burnerText">가스버너 켜기</span>
+        </button>
+
+        <div class="action-row">
+          <button id="packButton" class="primary-button" type="button">포장하기</button>
+          <button id="startButton" class="secondary-button" type="button">게임 시작</button>
+        </div>
+
+        <p id="message" class="message">주문 순서대로 재료를 담고, 조리 주문은 버너로 3초 끓인 뒤 포장하세요.</p>
+      </section>
+    </section>
+
+    <section class="recipe-panel">
+      <h2>레시피</h2>
+      <div class="recipe-grid">
+        <article>
+          <h3>부대찌개</h3>
+          <p>육수, 햄, 소시지, 양념장</p>
+        </article>
+        <article>
+          <h3>김치찌개</h3>
+          <p>육수, 김치, 돼지고기</p>
+        </article>
+        <article>
+          <h3>동태찌개</h3>
+          <p>육수, 동태, 고니, 콩나물</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal hidden" id="resultModal" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+    <div class="modal-box">
+      <h2 id="resultTitle">게임 종료</h2>
+      <p id="resultText"></p>
+      <button id="restartButton" class="primary-button" type="button">다시 시작</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
