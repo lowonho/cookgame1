@@ -3,15 +3,15 @@ const MAX_MISTAKES = 3;
 const COOKING_SECONDS = 3;
 
 const ingredients = [
-  { id: "broth", name: "육수" },
-  { id: "ham", name: "햄" },
-  { id: "sausage", name: "소시지" },
-  { id: "sauce", name: "양념장" },
-  { id: "kimchi", name: "김치" },
-  { id: "pork", name: "돼지고기" },
-  { id: "pollock", name: "동태" },
-  { id: "milt", name: "고니" },
-  { id: "sprouts", name: "콩나물" }
+  { id: "broth", name: "육수", visualClass: "ingredient-broth" },
+  { id: "ham", name: "햄", visualClass: "ingredient-ham" },
+  { id: "sausage", name: "소시지", visualClass: "ingredient-sausage" },
+  { id: "sauce", name: "양념장", visualClass: "ingredient-sauce" },
+  { id: "kimchi", name: "김치", visualClass: "ingredient-kimchi" },
+  { id: "pork", name: "돼지고기", visualClass: "ingredient-pork" },
+  { id: "pollock", name: "동태", visualClass: "ingredient-pollock" },
+  { id: "milt", name: "고니", visualClass: "ingredient-milt" },
+  { id: "sprouts", name: "콩나물", visualClass: "ingredient-sprouts" }
 ];
 
 const recipes = {
@@ -91,8 +91,13 @@ function renderIngredients() {
     button.className = "ingredient-button";
     button.type = "button";
     button.dataset.ingredientId = ingredient.id;
-    button.textContent = ingredient.name;
-    button.addEventListener("click", () => addIngredient(ingredient.id));
+
+    const name = document.createElement("span");
+    name.className = "ingredient-name";
+    name.textContent = ingredient.name;
+
+    button.append(createIngredientVisual(ingredient.id), name);
+    button.addEventListener("click", () => addIngredient(ingredient.id, button));
     elements.ingredients.appendChild(button);
   });
 }
@@ -141,7 +146,7 @@ function createRandomOrder() {
   };
 }
 
-function addIngredient(ingredientId) {
+function addIngredient(ingredientId, sourceButton) {
   if (!state.isPlaying || state.isCooking) {
     return;
   }
@@ -154,6 +159,7 @@ function addIngredient(ingredientId) {
   state.selectedIngredients.push(ingredientId);
   state.cooked = false;
   updateDisplay();
+  animateIngredientToPot(sourceButton, ingredientId);
   setMessage(`${getIngredientName(ingredientId)}을(를) 냄비에 넣었습니다.`);
 }
 
@@ -326,7 +332,11 @@ function renderPotContents() {
   state.selectedIngredients.forEach((ingredientId) => {
     const tag = document.createElement("span");
     tag.className = "pot-tag";
-    tag.textContent = getIngredientName(ingredientId);
+
+    const name = document.createElement("span");
+    name.textContent = getIngredientName(ingredientId);
+
+    tag.append(createIngredientVisual(ingredientId), name);
     elements.potContents.appendChild(tag);
   });
 
@@ -405,6 +415,64 @@ function setMessage(text, type = "") {
 function getIngredientName(ingredientId) {
   const ingredient = ingredients.find((item) => item.id === ingredientId);
   return ingredient ? ingredient.name : ingredientId;
+}
+
+function createIngredientVisual(ingredientId) {
+  const ingredient = ingredients.find((item) => item.id === ingredientId);
+  const visual = document.createElement("span");
+  visual.className = `ingredient-visual ${ingredient ? ingredient.visualClass : ""}`;
+  visual.setAttribute("aria-hidden", "true");
+  return visual;
+}
+
+function animateIngredientToPot(sourceButton, ingredientId) {
+  if (!sourceButton || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    return;
+  }
+
+  const sourceVisual = sourceButton.querySelector(".ingredient-visual");
+
+  if (!sourceVisual) {
+    return;
+  }
+
+  const start = sourceVisual.getBoundingClientRect();
+  const target = elements.potContents.getBoundingClientRect();
+  const flyer = document.createElement("span");
+  flyer.className = "flying-ingredient";
+  flyer.appendChild(createIngredientVisual(ingredientId));
+  flyer.style.left = `${start.left}px`;
+  flyer.style.top = `${start.top}px`;
+  document.body.appendChild(flyer);
+
+  const targetX = target.left + target.width / 2 - start.left - start.width / 2;
+  const targetY = target.top + target.height / 2 - start.top - start.height / 2;
+
+  const animation = flyer.animate(
+    [
+      {
+        transform: "translate(0, 0) scale(1)",
+        opacity: 1
+      },
+      {
+        transform: `translate(${targetX * 0.55}px, ${targetY - 90}px) scale(1.15) rotate(-12deg)`,
+        opacity: 1,
+        offset: 0.58
+      },
+      {
+        transform: `translate(${targetX}px, ${targetY}px) scale(0.56) rotate(18deg)`,
+        opacity: 0.35
+      }
+    ],
+    {
+      duration: 580,
+      easing: "cubic-bezier(0.22, 0.78, 0.28, 1)"
+    }
+  );
+
+  animation.addEventListener("finish", () => {
+    flyer.remove();
+  });
 }
 
 init();

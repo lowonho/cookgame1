@@ -46,8 +46,7 @@ button:disabled {
 
 .top-panel,
 .order-panel,
-.play-area,
-.recipe-panel {
+.play-area {
   margin-bottom: 18px;
 }
 
@@ -158,8 +157,9 @@ h1 {
 
 .play-area {
   display: grid;
-  grid-template-columns: 360px 1fr;
+  grid-template-columns: 280px minmax(360px, 1fr) 320px;
   gap: 18px;
+  align-items: start;
 }
 
 .ingredients-panel,
@@ -183,18 +183,22 @@ h1 {
 
 .ingredients-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 10px;
 }
 
 .ingredient-button {
-  min-height: 58px;
-  padding: 10px;
+  display: flex;
+  min-height: 66px;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
   border: 1px solid #f4b88e;
   border-radius: 8px;
   background: #fffaf5;
   color: var(--text);
   font-weight: 800;
+  text-align: left;
   transition: transform 150ms ease, border-color 150ms ease, background 150ms ease;
 }
 
@@ -208,6 +212,215 @@ h1 {
   border-color: var(--success);
   background: #e9f8f1;
   color: var(--success);
+}
+
+.ingredient-visual {
+  position: relative;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  border: 2px solid rgba(47, 31, 22, 0.15);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: inset 0 -6px 10px rgba(47, 31, 22, 0.08);
+}
+
+.ingredient-name {
+  flex: 1;
+}
+
+.ingredient-visual::before,
+.ingredient-visual::after {
+  position: absolute;
+  content: "";
+}
+
+.ingredient-broth {
+  background: #fff4d8;
+}
+
+.ingredient-broth::before {
+  left: 8px;
+  right: 8px;
+  bottom: 9px;
+  height: 15px;
+  border-radius: 0 0 15px 15px;
+  background: #d8892d;
+}
+
+.ingredient-broth::after {
+  left: 10px;
+  right: 10px;
+  bottom: 19px;
+  height: 7px;
+  border-radius: 50%;
+  background: #f8c76d;
+}
+
+.ingredient-ham::before {
+  inset: 10px 8px;
+  border-radius: 8px;
+  background: #f08ca2;
+  transform: rotate(-12deg);
+}
+
+.ingredient-ham::after {
+  left: 16px;
+  top: 12px;
+  width: 8px;
+  height: 20px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.45);
+  transform: rotate(-12deg);
+}
+
+.ingredient-sausage::before {
+  left: 8px;
+  top: 15px;
+  width: 26px;
+  height: 12px;
+  border-radius: 999px;
+  background: #b9362c;
+  transform: rotate(24deg);
+}
+
+.ingredient-sausage::after {
+  left: 13px;
+  top: 17px;
+  width: 17px;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.38);
+  transform: rotate(24deg);
+}
+
+.ingredient-sauce::before {
+  left: 12px;
+  top: 11px;
+  width: 18px;
+  height: 23px;
+  border-radius: 6px 6px 8px 8px;
+  background: #de3b26;
+}
+
+.ingredient-sauce::after {
+  left: 15px;
+  top: 7px;
+  width: 12px;
+  height: 7px;
+  border-radius: 4px 4px 2px 2px;
+  background: #71351f;
+}
+
+.ingredient-kimchi::before {
+  left: 10px;
+  top: 10px;
+  width: 22px;
+  height: 24px;
+  border-radius: 16px 4px 16px 4px;
+  background: #d62626;
+  transform: rotate(-16deg);
+}
+
+.ingredient-kimchi::after {
+  left: 18px;
+  top: 8px;
+  width: 5px;
+  height: 26px;
+  border-radius: 999px;
+  background: #7fb341;
+  transform: rotate(-16deg);
+}
+
+.ingredient-pork::before {
+  left: 9px;
+  top: 12px;
+  width: 25px;
+  height: 18px;
+  border-radius: 48% 52% 45% 55%;
+  background: #e8898d;
+  transform: rotate(14deg);
+}
+
+.ingredient-pork::after {
+  left: 17px;
+  top: 15px;
+  width: 10px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff1e8;
+}
+
+.ingredient-pollock::before {
+  left: 7px;
+  top: 14px;
+  width: 25px;
+  height: 14px;
+  border-radius: 50%;
+  background: #b6d6dc;
+}
+
+.ingredient-pollock::after {
+  right: 6px;
+  top: 15px;
+  width: 0;
+  height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 10px solid #79aab5;
+}
+
+.ingredient-milt::before {
+  left: 9px;
+  top: 13px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #f4eadf;
+  box-shadow: 9px 7px 0 #e8d8c6, 18px 1px 0 #f8eee5;
+}
+
+.ingredient-milt::after {
+  left: 13px;
+  bottom: 8px;
+  width: 18px;
+  height: 5px;
+  border-radius: 999px;
+  background: #d7bfa6;
+}
+
+.ingredient-sprouts::before {
+  left: 13px;
+  top: 12px;
+  width: 4px;
+  height: 24px;
+  border-radius: 999px;
+  background: #6faa3e;
+  box-shadow: 9px -2px 0 #88c95a, 17px 1px 0 #6faa3e;
+}
+
+.ingredient-sprouts::after {
+  left: 9px;
+  top: 7px;
+  width: 12px;
+  height: 9px;
+  border-radius: 50% 50% 30% 50%;
+  background: #b5db6a;
+  box-shadow: 12px 1px 0 #c7e986, 20px 6px 0 #b5db6a;
+}
+
+.flying-ingredient {
+  position: fixed;
+  z-index: 20;
+  width: 46px;
+  height: 46px;
+  pointer-events: none;
+  transform-origin: center;
+}
+
+.flying-ingredient .ingredient-visual {
+  width: 46px;
+  height: 46px;
 }
 
 .kitchen-panel {
@@ -305,10 +518,19 @@ h1 {
 .pot-tag {
   display: inline-flex;
   align-items: center;
+  gap: 6px;
   min-height: 34px;
   padding: 7px 10px;
   border-radius: 999px;
   background: rgba(255, 247, 237, 0.18);
+}
+
+.pot-tag .ingredient-visual {
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  margin: -10px -8px -10px -10px;
+  transform: scale(0.55);
 }
 
 .burner {
@@ -426,7 +648,7 @@ h1 {
 
 .recipe-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 12px;
   margin-top: 12px;
 }
@@ -487,8 +709,7 @@ h1 {
   }
 
   .status-board,
-  .play-area,
-  .recipe-grid {
+  .play-area {
     grid-template-columns: 1fr;
   }
 

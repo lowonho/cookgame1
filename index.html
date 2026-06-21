@@ -39,12 +39,22 @@
     </section>
 
     <section class="play-area">
-      <aside class="ingredients-panel">
-        <div class="panel-title">
-          <h2>재료</h2>
-          <button id="clearPotButton" class="subtle-button" type="button">냄비 비우기</button>
+      <aside class="recipe-panel">
+        <h2>레시피</h2>
+        <div class="recipe-grid">
+          <article>
+            <h3>부대찌개</h3>
+            <p>육수, 햄, 소시지, 양념장</p>
+          </article>
+          <article>
+            <h3>김치찌개</h3>
+            <p>육수, 김치, 돼지고기</p>
+          </article>
+          <article>
+            <h3>동태찌개</h3>
+            <p>육수, 동태, 고니, 콩나물</p>
+          </article>
         </div>
-        <div class="ingredients-grid" id="ingredients"></div>
       </aside>
 
       <section class="kitchen-panel">
@@ -75,24 +85,14 @@
 
         <p id="message" class="message">주문 순서대로 재료를 담고, 조리 주문은 버너로 3초 끓인 뒤 포장하세요.</p>
       </section>
-    </section>
 
-    <section class="recipe-panel">
-      <h2>레시피</h2>
-      <div class="recipe-grid">
-        <article>
-          <h3>부대찌개</h3>
-          <p>육수, 햄, 소시지, 양념장</p>
-        </article>
-        <article>
-          <h3>김치찌개</h3>
-          <p>육수, 김치, 돼지고기</p>
-        </article>
-        <article>
-          <h3>동태찌개</h3>
-          <p>육수, 동태, 고니, 콩나물</p>
-        </article>
-      </div>
+      <aside class="ingredients-panel">
+        <div class="panel-title">
+          <h2>재료</h2>
+          <button id="clearPotButton" class="subtle-button" type="button">냄비 비우기</button>
+        </div>
+        <div class="ingredients-grid" id="ingredients"></div>
+      </aside>
     </section>
   </main>
 
