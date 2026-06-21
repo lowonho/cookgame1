@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>찌개 포장 게임</title>
+  <title>찌개 포장 디펜스</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,22 +11,25 @@
     <section class="top-panel">
       <div>
         <p class="eyebrow">1분 안에 주문을 처리하세요</p>
-        <h1>찌개 포장 게임</h1>
+        <h1>찌개 포장 디펜스</h1>
       </div>
 
-      <div class="status-board" aria-label="게임 상태">
-        <div class="status-item">
-          <span>남은 시간</span>
-          <strong id="timeLeft">60</strong>
+      <div class="top-actions">
+        <div class="status-board" aria-label="게임 상태">
+          <div class="status-item">
+            <span>남은 시간</span>
+            <strong id="timeLeft">60</strong>
+          </div>
+          <div class="status-item">
+            <span>성공</span>
+            <strong id="score">0</strong>
+          </div>
+          <div class="status-item danger">
+            <span>실패</span>
+            <strong><span id="mistakes">0</span>/3</strong>
+          </div>
         </div>
-        <div class="status-item">
-          <span>성공</span>
-          <strong id="score">0</strong>
-        </div>
-        <div class="status-item danger">
-          <span>실패</span>
-          <strong><span id="mistakes">0</span>/3</strong>
-        </div>
+        <button id="rankingButton" class="secondary-button" type="button">랭킹 조회</button>
       </div>
     </section>
 
@@ -100,7 +103,24 @@
     <div class="modal-box">
       <h2 id="resultTitle">게임 종료</h2>
       <p id="resultText"></p>
+      <div class="ranking-save">
+        <label for="nicknameInput">닉네임</label>
+        <div class="ranking-save-row">
+          <input id="nicknameInput" type="text" maxlength="10" placeholder="닉네임 입력">
+          <button id="saveRankingButton" class="secondary-button" type="button">기록 저장</button>
+        </div>
+        <p id="rankingSaveMessage" class="small-message"></p>
+      </div>
       <button id="restartButton" class="primary-button" type="button">다시 시작</button>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="rankingModal" role="dialog" aria-modal="true" aria-labelledby="rankingTitle">
+    <div class="modal-box ranking-modal-box">
+      <h2 id="rankingTitle">랭킹 TOP 10</h2>
+      <ol id="rankingList" class="ranking-list"></ol>
+      <p id="emptyRanking" class="small-message">아직 저장된 기록이 없습니다.</p>
+      <button id="closeRankingButton" class="primary-button" type="button">닫기</button>
     </div>
   </div>
 

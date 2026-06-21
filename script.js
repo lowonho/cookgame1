@@ -1,6 +1,8 @@
 const GAME_SECONDS = 60;
 const MAX_MISTAKES = 3;
 const COOKING_SECONDS = 3;
+const RANKING_STORAGE_KEY = "jjigae-packing-defense-rankings";
+const MAX_RANKINGS = 10;
 
 const ingredients = [
   { id: "broth", name: "육수", visualClass: "ingredient-broth" },
@@ -46,7 +48,8 @@ const state = {
   orders: [],
   timerId: null,
   cookingTimerId: null,
-  cookingLeft: 0
+  cookingLeft: 0,
+  scoreSaved: false
 };
 
 const elements = {
@@ -62,11 +65,19 @@ const elements = {
   steam: document.querySelector("#steam"),
   packButton: document.querySelector("#packButton"),
   startButton: document.querySelector("#startButton"),
+  rankingButton: document.querySelector("#rankingButton"),
   clearPotButton: document.querySelector("#clearPotButton"),
   message: document.querySelector("#message"),
   resultModal: document.querySelector("#resultModal"),
   resultText: document.querySelector("#resultText"),
-  restartButton: document.querySelector("#restartButton")
+  nicknameInput: document.querySelector("#nicknameInput"),
+  saveRankingButton: document.querySelector("#saveRankingButton"),
+  rankingSaveMessage: document.querySelector("#rankingSaveMessage"),
+  restartButton: document.querySelector("#restartButton"),
+  rankingModal: document.querySelector("#rankingModal"),
+  rankingList: document.querySelector("#rankingList"),
+  emptyRanking: document.querySelector("#emptyRanking"),
+  closeRankingButton: document.querySelector("#closeRankingButton")
 };
 
 function init() {
@@ -79,6 +90,9 @@ function init() {
 function bindEvents() {
   elements.startButton.addEventListener("click", startGame);
   elements.restartButton.addEventListener("click", startGame);
+  elements.rankingButton.addEventListener("click", openRankingModal);
+  elements.closeRankingButton.addEventListener("click", closeRankingModal);
+  elements.saveRankingButton.addEventListener("click", saveCurrentRanking);
   elements.clearPotButton.addEventListener("click", clearPot);
   elements.packButton.addEventListener("click", packCurrentOrder);
   elements.burnerButton.addEventListener("click", startCooking);
@@ -116,8 +130,13 @@ function startGame() {
   state.pendingIngredients = [];
   state.orders = createOrders(5);
   state.cookingLeft = 0;
+  state.scoreSaved = false;
 
   elements.resultModal.classList.add("hidden");
+  elements.rankingModal.classList.add("hidden");
+  elements.rankingSaveMessage.textContent = "";
+  elements.nicknameInput.value = "";
+  elements.saveRankingButton.disabled = false;
   setControlsEnabled(true);
   setMessage("첫 주문이 들어왔습니다. 재료를 냄비에 담아주세요.");
   updateDisplay();
@@ -328,6 +347,7 @@ function updateDisplay() {
   renderOrderQueue();
   renderPotContents();
   syncIngredientButtons();
+  updateStartButtonVisibility();
 }
 
 function renderCurrentOrder() {
@@ -421,7 +441,91 @@ function endGame(reason) {
   updateDisplay();
 
   elements.resultText.textContent = `${reason}! 최종 성공 포장 수는 ${state.score}개입니다.`;
+  elements.rankingSaveMessage.textContent = "닉네임을 입력하고 기록을 저장할 수 있습니다.";
+  elements.nicknameInput.value = "";
+  elements.saveRankingButton.disabled = false;
   elements.resultModal.classList.remove("hidden");
+}
+
+function saveCurrentRanking() {
+  if (state.scoreSaved) {
+    elements.rankingSaveMessage.textContent = "이미 저장된 기록입니다.";
+    return;
+  }
+
+  const nickname = elements.nicknameInput.value.trim();
+
+  if (!nickname) {
+    elements.rankingSaveMessage.textContent = "닉네임을 입력해주세요.";
+    elements.nicknameInput.focus();
+    return;
+  }
+
+  const rankings = getRankings();
+  rankings.push({
+    nickname,
+    score: state.score,
+    date: new Date().toLocaleDateString("ko-KR")
+  });
+
+  saveRankings(rankings);
+  state.scoreSaved = true;
+  elements.saveRankingButton.disabled = true;
+  elements.rankingSaveMessage.textContent = "기록이 저장되었습니다. 랭킹 조회 버튼에서 확인하세요.";
+}
+
+function openRankingModal() {
+  renderRankings();
+  elements.rankingModal.classList.remove("hidden");
+}
+
+function closeRankingModal() {
+  elements.rankingModal.classList.add("hidden");
+}
+
+function renderRankings() {
+  const rankings = getRankings();
+  elements.rankingList.innerHTML = "";
+  elements.emptyRanking.classList.toggle("hidden", rankings.length > 0);
+
+  rankings.forEach((record, index) => {
+    const item = document.createElement("li");
+
+    const rank = document.createElement("span");
+    rank.className = "ranking-rank";
+    rank.textContent = `${index + 1}등`;
+
+    const name = document.createElement("span");
+    name.className = "ranking-name";
+    name.textContent = `${record.nickname} (${record.date})`;
+
+    const score = document.createElement("span");
+    score.className = "ranking-score";
+    score.textContent = `${record.score}개`;
+
+    item.append(rank, name, score);
+    elements.rankingList.appendChild(item);
+  });
+}
+
+function getRankings() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(RANKING_STORAGE_KEY)) || [];
+    return saved
+      .filter((record) => typeof record.nickname === "string" && Number.isFinite(record.score))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, MAX_RANKINGS);
+  } catch (error) {
+    return [];
+  }
+}
+
+function saveRankings(rankings) {
+  const topRankings = rankings
+    .sort((a, b) => b.score - a.score)
+    .slice(0, MAX_RANKINGS);
+
+  localStorage.setItem(RANKING_STORAGE_KEY, JSON.stringify(topRankings));
 }
 
 function stopTimers() {
@@ -523,6 +627,10 @@ function triggerPotReceive() {
 
 function hasPendingIngredients() {
   return state.pendingIngredients.length > 0;
+}
+
+function updateStartButtonVisibility() {
+  elements.startButton.classList.toggle("hidden", state.isPlaying);
 }
 
 init();

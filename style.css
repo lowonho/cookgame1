@@ -38,6 +38,10 @@ button:disabled {
   opacity: 0.55;
 }
 
+.hidden {
+  display: none !important;
+}
+
 .game-shell {
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
@@ -55,6 +59,12 @@ button:disabled {
   align-items: center;
   justify-content: space-between;
   gap: 20px;
+}
+
+.top-actions {
+  display: grid;
+  justify-items: end;
+  gap: 10px;
 }
 
 .eyebrow {
@@ -157,9 +167,13 @@ h1 {
 
 .play-area {
   display: grid;
-  grid-template-columns: 280px minmax(360px, 1fr) 320px;
+  grid-template-columns: 280px minmax(360px, 1fr);
   gap: 18px;
   align-items: start;
+}
+
+.ingredients-panel {
+  grid-column: 1 / -1;
 }
 
 .ingredients-panel,
@@ -183,7 +197,7 @@ h1 {
 
 .ingredients-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(5, minmax(140px, 1fr));
   gap: 10px;
 }
 
@@ -720,11 +734,93 @@ h1 {
   font-weight: 800;
 }
 
+.ranking-save {
+  display: grid;
+  gap: 8px;
+  margin: 18px 0;
+  text-align: left;
+}
+
+.ranking-save label {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.ranking-save-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.ranking-save input {
+  min-height: 44px;
+  min-width: 0;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--text);
+  font: inherit;
+  font-weight: 800;
+}
+
+.small-message {
+  min-height: 22px;
+  margin-bottom: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+.ranking-modal-box {
+  width: min(520px, 100%);
+}
+
+.ranking-list {
+  display: grid;
+  gap: 8px;
+  margin: 16px 0;
+  padding-left: 0;
+  list-style-position: inside;
+}
+
+.ranking-list li {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fffaf5;
+  text-align: left;
+  font-weight: 900;
+}
+
+.ranking-rank {
+  color: var(--primary-dark);
+}
+
+.ranking-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ranking-score {
+  color: var(--success);
+}
+
 @media (max-width: 840px) {
   .top-panel,
   .order-panel {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .top-actions {
+    justify-items: stretch;
   }
 
   .status-board,
@@ -748,6 +844,10 @@ h1 {
   }
 
   .ingredients-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ranking-save-row {
     grid-template-columns: 1fr;
   }
 
