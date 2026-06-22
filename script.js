@@ -66,6 +66,8 @@ const elements = {
   startButton: document.querySelector("#startButton"),
   rankingButton: document.querySelector("#rankingButton"),
   clearPotButton: document.querySelector("#clearPotButton"),
+  recipePanel: document.querySelector(".recipe-panel"),
+  recipeToggleButton: document.querySelector("#recipeToggleButton"),
   message: document.querySelector("#message"),
   resultModal: document.querySelector("#resultModal"),
   resultText: document.querySelector("#resultText"),
@@ -93,6 +95,7 @@ function bindEvents() {
   elements.closeRankingButton.addEventListener("click", closeRankingModal);
   elements.saveRankingButton.addEventListener("click", saveCurrentRanking);
   elements.clearPotButton.addEventListener("click", clearPot);
+  elements.recipeToggleButton.addEventListener("click", toggleRecipePanel);
   elements.packButton.addEventListener("click", packCurrentOrder);
   elements.burnerButton.addEventListener("click", startCooking);
 }
@@ -645,6 +648,12 @@ function triggerPotReceive() {
 
 function hasPendingIngredients() {
   return state.pendingIngredients.length > 0;
+}
+
+function toggleRecipePanel() {
+  const isCollapsed = elements.recipePanel.classList.toggle("collapsed");
+  elements.recipeToggleButton.textContent = isCollapsed ? "펼치기" : "접기";
+  elements.recipeToggleButton.setAttribute("aria-expanded", String(!isCollapsed));
 }
 
 function updateStartButtonVisibility() {

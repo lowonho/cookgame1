@@ -35,8 +35,11 @@
 
     <section class="play-area">
       <aside class="recipe-panel">
-        <h2>레시피</h2>
-        <div class="recipe-grid">
+        <div class="panel-title">
+          <h2>레시피</h2>
+          <button id="recipeToggleButton" class="subtle-button recipe-toggle-button" type="button" aria-expanded="true" aria-controls="recipeGrid">접기</button>
+        </div>
+        <div class="recipe-grid" id="recipeGrid">
           <article>
             <h3>부대찌개</h3>
             <p>육수, 햄, 소시지, 양념장</p>

@@ -232,6 +232,14 @@ h1 {
   margin-bottom: 0;
 }
 
+.recipe-toggle-button {
+  min-width: 64px;
+}
+
+.recipe-panel.collapsed .recipe-grid {
+  display: none;
+}
+
 .ingredients-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(140px, 1fr));
