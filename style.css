@@ -148,6 +148,37 @@ h1 {
   font-size: 1.45rem;
 }
 
+.order-label {
+  display: grid;
+  gap: 5px;
+  line-height: 1.15;
+}
+
+.order-food {
+  color: var(--text);
+  font-weight: 900;
+}
+
+.order-mode {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.order-mode-cooked {
+  background: #ffe2d8;
+  color: var(--primary-dark);
+}
+
+.order-mode-raw {
+  background: #e9f8f1;
+  color: var(--success);
+}
+
 .order-list {
   display: flex;
   flex-wrap: wrap;
@@ -156,12 +187,17 @@ h1 {
 }
 
 .order-chip {
-  padding: 8px 10px;
-  border-radius: 999px;
+  min-width: 96px;
+  padding: 9px 10px;
+  border-radius: 8px;
   background: var(--surface-strong);
   color: var(--muted);
   font-size: 0.9rem;
   font-weight: 700;
+}
+
+.order-chip .order-label {
+  gap: 4px;
 }
 
 .play-area {

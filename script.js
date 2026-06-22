@@ -359,7 +359,8 @@ function renderCurrentOrder() {
     return;
   }
 
-  elements.currentOrder.textContent = `${recipes[order.recipeId].name} / ${modeLabels[order.mode]}`;
+  elements.currentOrder.innerHTML = "";
+  elements.currentOrder.appendChild(createOrderLabel(order));
 }
 
 function renderOrderQueue() {
@@ -368,9 +369,25 @@ function renderOrderQueue() {
   state.orders.slice(1, 5).forEach((order) => {
     const chip = document.createElement("span");
     chip.className = "order-chip";
-    chip.textContent = `${recipes[order.recipeId].name} ${modeLabels[order.mode]}`;
+    chip.appendChild(createOrderLabel(order));
     elements.orderQueue.appendChild(chip);
   });
+}
+
+function createOrderLabel(order) {
+  const wrapper = document.createElement("span");
+  wrapper.className = "order-label";
+
+  const food = document.createElement("span");
+  food.className = "order-food";
+  food.textContent = recipes[order.recipeId].name;
+
+  const mode = document.createElement("span");
+  mode.className = `order-mode order-mode-${order.mode}`;
+  mode.textContent = modeLabels[order.mode];
+
+  wrapper.append(food, mode);
+  return wrapper;
 }
 
 function renderPotContents() {
