@@ -1,6 +1,5 @@
 const GAME_SECONDS = 60;
 const MAX_MISTAKES = 3;
-const COOKING_SECONDS = 3;
 const RANKING_STORAGE_KEY = "jjigae-packing-defense-rankings";
 const MAX_RANKINGS = 10;
 
@@ -138,7 +137,7 @@ function startGame() {
   elements.nicknameInput.value = "";
   elements.saveRankingButton.disabled = false;
   setControlsEnabled(true);
-  setMessage("첫 주문이 들어왔습니다. 재료를 냄비에 담아주세요.");
+  setMessage("재료를 담고 포장합니다, 조리 주문은 버너로 끓인 뒤 포장하세요.");
   updateDisplay();
 
   state.timerId = window.setInterval(() => {
@@ -208,7 +207,7 @@ function clearPot() {
   }
 
   resetPot();
-  setMessage("냄비를 비웠습니다. 현재 주문에 맞게 다시 담아주세요.");
+  setMessage("냄비를 비웠습니다. 주문표에 맞게 다시 담아주세요.");
 }
 
 function startCooking() {
@@ -226,26 +225,28 @@ function startCooking() {
     return;
   }
 
-  state.isCooking = true;
-  state.cookingLeft = COOKING_SECONDS;
+  if (state.cooked) {
+    setMessage("이미 조리가 완료되었습니다. 이제 포장하세요.", "success");
+    return;
+  }
+
+  state.cooked = true;
+  state.cookingLeft = 0;
   elements.burnerButton.classList.add("active");
   elements.steam.classList.add("active");
-  setControlsEnabled(false, { keepBurnerVisible: true });
   updateBurnerText();
-  setMessage("보글보글 끓이는 중입니다. 3초 뒤 포장할 수 있어요.");
+  setMessage("조리가 완료되었습니다. 이제 포장하세요.", "success");
 
-  state.cookingTimerId = window.setInterval(() => {
-    state.cookingLeft -= 1;
-    updateBurnerText();
-
-    if (state.cookingLeft <= 0) {
-      finishCooking();
-    }
-  }, 1000);
+  window.clearTimeout(state.cookingTimerId);
+  state.cookingTimerId = window.setTimeout(() => {
+    elements.burnerButton.classList.remove("active");
+    elements.steam.classList.remove("active");
+    state.cookingTimerId = null;
+  }, 450);
 }
 
 function finishCooking() {
-  window.clearInterval(state.cookingTimerId);
+  window.clearTimeout(state.cookingTimerId);
   state.cookingTimerId = null;
   state.isCooking = false;
   state.cooked = true;
@@ -309,7 +310,7 @@ function checkOrder(order) {
   if (order.mode === "cooked" && !state.cooked) {
     return {
       ok: false,
-      reason: "조리 주문입니다. 가스버너로 3초 끓인 뒤 포장해야 합니다."
+      reason: "조리 주문입니다. 가스버너로 끓인 뒤 포장해야 합니다."
     };
   }
 
@@ -534,7 +535,7 @@ function stopTimers() {
   }
 
   if (state.cookingTimerId) {
-    window.clearInterval(state.cookingTimerId);
+    window.clearTimeout(state.cookingTimerId);
   }
 
   state.timerId = null;

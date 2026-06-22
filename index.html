@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>찌개 포장 타이쿤</title>
+  <title>찌개집 막내아들</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
     <section class="top-panel">
       <div>
         <p class="eyebrow">1분 안에 주문을 처리하세요</p>
-        <h1>찌개 포장 디펜스</h1>
+        <h1>찌개집 막내아들</h1>
       </div>
 
       <div class="top-actions">
@@ -31,14 +31,6 @@
         </div>
         <button id="rankingButton" class="secondary-button" type="button">랭킹 조회</button>
       </div>
-    </section>
-
-    <section class="order-panel">
-      <div class="current-order">
-        <span class="label">현재 주문</span>
-        <strong id="currentOrder">게임 시작을 눌러주세요</strong>
-      </div>
-      <div class="order-list" id="orderQueue" aria-label="대기 주문"></div>
     </section>
 
     <section class="play-area">
@@ -61,6 +53,14 @@
       </aside>
 
       <section class="kitchen-panel">
+        <div class="order-panel">
+          <div class="current-order">
+            <span class="label">주문표</span>
+            <strong id="currentOrder">게임 시작을 눌러주세요</strong>
+          </div>
+          <div class="order-list" id="orderQueue" aria-label="대기 주문"></div>
+        </div>
+
         <div class="pot-area">
           <div class="steam" id="steam" aria-hidden="true">
             <span></span>
@@ -82,11 +82,11 @@
         </button>
 
         <div class="action-row">
-          <button id="packButton" class="primary-button" type="button">포장하기</button>
           <button id="startButton" class="secondary-button" type="button">게임 시작</button>
+          <button id="packButton" class="primary-button" type="button">포장하기</button>
         </div>
 
-        <p id="message" class="message">주문 순서대로 재료를 담고, 조리 주문은 버너로 3초 끓인 뒤 포장하세요.</p>
+        <p id="message" class="message">재료를 담고 포장합니다, 조리 주문은 버너로 끓인 뒤 포장하세요.</p>
       </section>
 
       <aside class="ingredients-panel">

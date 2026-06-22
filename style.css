@@ -49,7 +49,6 @@ button:disabled {
 }
 
 .top-panel,
-.order-panel,
 .play-area {
   margin-bottom: 18px;
 }
@@ -439,15 +438,39 @@ h1 {
 
 .kitchen-panel {
   display: grid;
+  grid-template-columns: minmax(170px, 220px) minmax(300px, 1fr) 160px;
+  align-items: center;
   align-content: start;
   justify-items: center;
   gap: 18px;
   min-height: 480px;
 }
 
+.kitchen-panel .order-panel {
+  display: grid;
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  align-self: stretch;
+  width: 100%;
+  align-content: center;
+  justify-content: stretch;
+  box-shadow: none;
+}
+
+.kitchen-panel .current-order {
+  gap: 8px;
+}
+
+.kitchen-panel .order-list {
+  justify-content: flex-start;
+  margin-top: 14px;
+}
+
 .pot-area {
   position: relative;
   display: grid;
+  grid-column: 2;
+  grid-row: 1;
   place-items: end center;
   width: min(420px, 100%);
   min-height: 260px;
@@ -569,6 +592,8 @@ h1 {
 .burner {
   position: relative;
   display: grid;
+  grid-column: 2;
+  grid-row: 2;
   place-items: center;
   width: 220px;
   height: 110px;
@@ -623,7 +648,10 @@ h1 {
 
 .action-row {
   display: flex;
-  flex-wrap: wrap;
+  grid-column: 3;
+  grid-row: 1 / span 2;
+  width: 100%;
+  flex-direction: column;
   justify-content: center;
   gap: 10px;
 }
@@ -658,6 +686,7 @@ h1 {
 }
 
 .message {
+  grid-column: 1 / -1;
   width: min(560px, 100%);
   min-height: 48px;
   margin-bottom: 0;
@@ -824,8 +853,23 @@ h1 {
   }
 
   .status-board,
-  .play-area {
+  .play-area,
+  .kitchen-panel {
     grid-template-columns: 1fr;
+  }
+
+  .kitchen-panel .order-panel,
+  .pot-area,
+  .burner,
+  .action-row,
+  .message {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .action-row {
+    flex-direction: row;
+    flex-wrap: wrap;
   }
 
   .order-list {
