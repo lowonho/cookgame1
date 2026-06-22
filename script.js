@@ -74,7 +74,7 @@ const elements = {
   nicknameInput: document.querySelector("#nicknameInput"),
   saveRankingButton: document.querySelector("#saveRankingButton"),
   rankingSaveMessage: document.querySelector("#rankingSaveMessage"),
-  restartButton: document.querySelector("#restartButton"),
+  closeResultButton: document.querySelector("#closeResultButton"),
   rankingModal: document.querySelector("#rankingModal"),
   rankingList: document.querySelector("#rankingList"),
   emptyRanking: document.querySelector("#emptyRanking"),
@@ -90,7 +90,7 @@ function init() {
 
 function bindEvents() {
   elements.startButton.addEventListener("click", startGame);
-  elements.restartButton.addEventListener("click", startGame);
+  elements.closeResultButton.addEventListener("click", closeResultModal);
   elements.rankingButton.addEventListener("click", openRankingModal);
   elements.closeRankingButton.addEventListener("click", closeRankingModal);
   elements.saveRankingButton.addEventListener("click", saveCurrentRanking);
@@ -502,6 +502,11 @@ function openRankingModal() {
 
 function closeRankingModal() {
   elements.rankingModal.classList.add("hidden");
+}
+
+function closeResultModal() {
+  elements.resultModal.classList.add("hidden");
+  updateStartButtonVisibility();
 }
 
 function renderRankings() {
