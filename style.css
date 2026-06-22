@@ -690,6 +690,7 @@ h1 {
 .burner span:last-child {
   position: absolute;
   bottom: 12px;
+  white-space: nowrap;
 }
 
 .action-row {
@@ -1079,7 +1080,8 @@ h1 {
 
   .burner span:last-child {
     bottom: 8px;
-    font-size: 0.9rem;
+    font-size: 0.86rem;
+    white-space: nowrap;
   }
 
   .message {
