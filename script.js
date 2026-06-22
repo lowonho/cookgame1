@@ -1,5 +1,5 @@
 const GAME_SECONDS = 60;
-const MAX_MISTAKES = 3;
+const MAX_LIVES = 3;
 const RANKING_STORAGE_KEY = "jjigae-packing-defense-rankings";
 const MAX_RANKINGS = 10;
 
@@ -41,7 +41,7 @@ const state = {
   cooked: false,
   timeLeft: GAME_SECONDS,
   score: 0,
-  mistakes: 0,
+  lives: MAX_LIVES,
   selectedIngredients: [],
   pendingIngredients: [],
   orders: [],
@@ -54,7 +54,7 @@ const state = {
 const elements = {
   timeLeft: document.querySelector("#timeLeft"),
   score: document.querySelector("#score"),
-  mistakes: document.querySelector("#mistakes"),
+  lives: document.querySelector("#lives"),
   currentOrder: document.querySelector("#currentOrder"),
   orderQueue: document.querySelector("#orderQueue"),
   ingredients: document.querySelector("#ingredients"),
@@ -124,7 +124,7 @@ function startGame() {
   state.cooked = false;
   state.timeLeft = GAME_SECONDS;
   state.score = 0;
-  state.mistakes = 0;
+  state.lives = MAX_LIVES;
   state.selectedIngredients = [];
   state.pendingIngredients = [];
   state.orders = createOrders(5);
@@ -282,13 +282,13 @@ function packCurrentOrder() {
     resetPot();
     setMessage("정확하게 포장했습니다. 다음 주문으로 이동합니다!", "success");
   } else {
-    state.mistakes += 1;
+    state.lives -= 1;
     resetPot();
     setMessage(result.reason, "error");
 
-    if (state.mistakes >= MAX_MISTAKES) {
+    if (state.lives <= 0) {
       updateDisplay();
-      endGame("실패 3회");
+      endGame("목숨 소진");
       return;
     }
   }
@@ -342,7 +342,7 @@ function resetPot() {
 function updateDisplay() {
   elements.timeLeft.textContent = state.timeLeft;
   elements.score.textContent = state.score;
-  elements.mistakes.textContent = state.mistakes;
+  elements.lives.textContent = state.lives;
 
   renderCurrentOrder();
   renderOrderQueue();
