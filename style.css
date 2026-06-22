@@ -734,15 +734,18 @@ h1 {
 
 .message {
   grid-column: 1 / -1;
-  width: min(560px, 100%);
+  width: min(980px, 100%);
   min-height: 48px;
   margin-bottom: 0;
   padding: 12px 14px;
   border-radius: 8px;
   background: #fff4d8;
   color: #794b14;
+  font-size: clamp(0.95rem, 1.5vw, 1.15rem);
+  line-height: 1.25;
   text-align: center;
   font-weight: 800;
+  white-space: nowrap;
 }
 
 .message.success {
@@ -1088,7 +1091,10 @@ h1 {
     width: 100%;
     min-height: 0;
     padding: 10px 12px;
-    font-size: 0.9rem;
+    font-size: clamp(0.68rem, 2.7vw, 0.9rem);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .recipe-grid {
