@@ -98,18 +98,39 @@ function init() {
 }
 
 function bindEvents() {
-  elements.startButton.addEventListener("click", startGame);
-  elements.closeResultButton.addEventListener("click", closeResultModal);
-  elements.rankingButton.addEventListener("click", openRankingModal);
-  elements.bgmToggleButton.addEventListener("click", toggleBgm);
+  bindPress(elements.startButton, startGame);
+  bindPress(elements.closeResultButton, closeResultModal);
+  bindPress(elements.rankingButton, openRankingModal);
+  bindPress(elements.bgmToggleButton, toggleBgm);
   elements.bgmVolume.addEventListener("input", updateBgmVolume);
-  elements.closeRankingButton.addEventListener("click", closeRankingModal);
-  elements.saveRankingButton.addEventListener("click", saveCurrentRanking);
-  elements.clearPotButton.addEventListener("click", clearPot);
-  elements.recipeToggleButton.addEventListener("click", toggleRecipePanel);
-  elements.packButton.addEventListener("click", packCurrentOrder);
-  elements.burnerButton.addEventListener("click", startCooking);
-  document.addEventListener("click", playButtonSound);
+  bindPress(elements.closeRankingButton, closeRankingModal);
+  bindPress(elements.saveRankingButton, saveCurrentRanking);
+  bindPress(elements.clearPotButton, clearPot);
+  bindPress(elements.recipeToggleButton, toggleRecipePanel);
+  bindPress(elements.packButton, packCurrentOrder);
+  bindPress(elements.burnerButton, startCooking);
+}
+
+function bindPress(element, handler) {
+  element.addEventListener("pointerup", (event) => {
+    if (event.pointerType === "mouse" && event.button !== 0) {
+      return;
+    }
+
+    event.preventDefault();
+    playButtonSoundForButton(element);
+    handler(event);
+  });
+
+  element.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") {
+      return;
+    }
+
+    event.preventDefault();
+    playButtonSoundForButton(element);
+    handler(event);
+  });
 }
 
 function renderIngredients() {
@@ -126,7 +147,7 @@ function renderIngredients() {
     name.textContent = ingredient.name;
 
     button.append(createIngredientVisual(ingredient.id), name);
-    button.addEventListener("click", () => addIngredient(ingredient.id, button));
+    bindPress(button, () => addIngredient(ingredient.id, button));
     elements.ingredients.appendChild(button);
   });
 }
@@ -620,9 +641,7 @@ function playBgmStep() {
   playTone(frequency, 0.16, state.bgmGain, "triangle", 0.08);
 }
 
-function playButtonSound(event) {
-  const button = event.target.closest("button");
-
+function playButtonSoundForButton(button) {
   if (!button || button.disabled) {
     return;
   }
