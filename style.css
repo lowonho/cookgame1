@@ -573,14 +573,16 @@ h1 {
   display: grid;
   grid-column: 2;
   grid-row: 1;
-  place-items: end center;
-  width: min(420px, 100%);
-  min-height: 260px;
+  place-items: center;
+  width: min(520px, 100%);
+  min-height: 350px;
+  padding-top: 4px;
 }
 
 .steam {
   position: absolute;
-  top: 6px;
+  top: -6px;
+  z-index: 4;
   display: none;
   gap: 18px;
 }
@@ -619,39 +621,71 @@ h1 {
   }
 }
 
-.pot {
-  width: min(380px, 100%);
+.cookware-stage {
+  position: relative;
+  display: grid;
+  width: min(520px, 100%);
+  aspect-ratio: 1448 / 1086;
+  place-items: center;
+  isolation: isolate;
 }
 
-.pot-rim {
-  height: 38px;
-  border: 8px solid #3c3c3c;
-  border-radius: 999px;
-  background: #5c5c5c;
-  transform: translateY(18px);
+.cookware-stage::after {
+  position: absolute;
+  right: 18%;
+  bottom: 2%;
+  left: 16%;
+  z-index: 0;
+  height: 9%;
+  border-radius: 50%;
+  background: rgba(47, 31, 22, 0.18);
+  filter: blur(12px);
+  content: "";
 }
 
-.pot-body {
-  min-height: 190px;
-  padding: 44px 26px 24px;
-  border-radius: 0 0 38px 38px;
-  background: linear-gradient(160deg, #555 0%, #222 100%);
-  box-shadow: inset 0 -18px 24px rgba(0, 0, 0, 0.28);
+.cookware-image {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 18px 22px rgba(47, 31, 22, 0.2));
+  pointer-events: none;
+  user-select: none;
+}
+
+.pot-contents-overlay {
+  position: absolute;
+  top: 15%;
+  right: 27%;
+  left: 24%;
+  z-index: 3;
+  display: grid;
+  min-height: 26%;
+  place-items: center;
+  pointer-events: none;
 }
 
 .pot-contents {
   display: flex;
-  min-height: 108px;
+  width: 100%;
+  min-height: 92px;
+  max-height: 132px;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 8px;
-  padding: 14px;
-  border-radius: 8px;
-  background: #b94626;
+  gap: 6px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 247, 237, 0.46);
+  border-radius: 999px / 68%;
+  background: rgba(109, 38, 18, 0.62);
   color: #fff7ed;
+  box-shadow: inset 0 0 18px rgba(255, 202, 117, 0.22), 0 6px 18px rgba(47, 31, 22, 0.16);
   text-align: center;
+  text-shadow: 0 1px 3px rgba(47, 31, 22, 0.45);
   font-weight: 800;
+  line-height: 1.2;
+  backdrop-filter: blur(2px);
 }
 
 .pot-contents.receiving {
@@ -676,51 +710,63 @@ h1 {
 .pot-tag {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  min-height: 34px;
-  padding: 7px 10px;
+  gap: 4px;
+  min-height: 30px;
+  padding: 5px 8px;
   border-radius: 999px;
-  background: rgba(255, 247, 237, 0.18);
+  background: rgba(255, 247, 237, 0.22);
+  font-size: 0.78rem;
 }
 
 .pot-tag .ingredient-visual {
-  flex: 0 0 42px;
-  width: 42px;
-  height: 42px;
-  margin: -10px -8px -10px -10px;
-  transform: scale(0.55);
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  margin: -9px -8px -9px -10px;
+  transform: scale(0.5);
 }
 
 .burner {
   position: relative;
   display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
   grid-column: 2;
   grid-row: 2;
+  gap: 8px;
   place-items: center;
-  width: 220px;
-  height: 110px;
+  width: 184px;
+  height: 50px;
+  padding: 0 14px;
+  border: 1px solid rgba(47, 31, 22, 0.12);
   border-radius: 8px;
-  background: linear-gradient(180deg, #464646 0%, #222 100%);
+  background: #2f1f16;
   color: white;
   font-weight: 900;
-  box-shadow: 0 14px 24px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 10px 22px rgba(47, 31, 22, 0.2);
+  transition: transform 150ms ease, background 150ms ease;
+}
+
+.burner:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: var(--primary-dark);
 }
 
 .burner-top {
-  position: absolute;
-  top: 15px;
-  width: 92px;
-  height: 38px;
-  border: 7px solid #171717;
-  border-radius: 999px;
-  background: #676767;
+  position: relative;
+  width: 28px;
+  height: 28px;
+  border: 6px solid #171717;
+  border-radius: 50%;
+  background: #5f5b56;
+  box-shadow: inset 0 2px 5px rgba(255, 255, 255, 0.22);
 }
 
 .flame {
   position: absolute;
-  top: 35px;
-  width: 44px;
-  height: 54px;
+  top: 13px;
+  left: 25px;
+  width: 15px;
+  height: 20px;
   border-radius: 50% 50% 50% 50%;
   background: transparent;
   transform: rotate(45deg) scale(0);
@@ -729,7 +775,7 @@ h1 {
 
 .burner.active .flame {
   background: linear-gradient(135deg, #ffe66d 15%, #ff8c1a 54%, #e32612 100%);
-  box-shadow: 0 0 22px rgba(255, 110, 30, 0.7);
+  box-shadow: 0 0 14px rgba(255, 110, 30, 0.75);
   transform: rotate(45deg) scale(1);
   animation: flamePulse 380ms infinite alternate;
 }
@@ -744,8 +790,9 @@ h1 {
 }
 
 .burner span:last-child {
-  position: absolute;
-  bottom: 12px;
+  position: static;
+  justify-self: start;
+  min-width: 0;
   white-space: nowrap;
 }
 
@@ -1109,52 +1156,66 @@ h1 {
 
   .pot-area {
     width: 100%;
-    min-height: 190px;
+    min-height: 240px;
+    padding-top: 0;
   }
 
-  .pot {
-    width: min(300px, 100%);
+  .cookware-stage {
+    width: min(360px, 100%);
   }
 
-  .pot-rim {
-    height: 30px;
-    border-width: 6px;
-    transform: translateY(14px);
-  }
-
-  .pot-body {
-    min-height: 140px;
-    padding: 34px 16px 16px;
-    border-radius: 0 0 28px 28px;
+  .pot-contents-overlay {
+    top: 15%;
+    right: 18%;
+    left: 16%;
+    min-height: 28%;
   }
 
   .pot-contents {
-    min-height: 84px;
-    gap: 5px;
-    padding: 10px;
-    font-size: 0.9rem;
+    min-height: 66px;
+    max-height: 94px;
+    gap: 4px;
+    padding: 7px 9px;
+    border-radius: 22px;
+    font-size: 0.76rem;
+  }
+
+  .pot-tag {
+    min-height: 24px;
+    gap: 3px;
+    padding: 3px 6px;
+    font-size: 0.68rem;
+  }
+
+  .pot-tag .ingredient-visual {
+    flex-basis: 28px;
+    width: 28px;
+    height: 28px;
+    margin: -7px -6px -7px -8px;
+    transform: scale(0.45);
   }
 
   .burner {
-    width: min(220px, 100%);
-    height: 76px;
+    grid-template-columns: 28px minmax(0, 1fr);
+    width: min(180px, 100%);
+    height: 46px;
+    padding: 0 12px;
   }
 
   .burner-top {
-    top: 10px;
-    width: 78px;
-    height: 30px;
-    border-width: 6px;
+    width: 24px;
+    height: 24px;
+    border-width: 5px;
   }
 
   .flame {
-    top: 26px;
-    width: 34px;
-    height: 42px;
+    top: 12px;
+    left: 21px;
+    width: 14px;
+    height: 18px;
   }
 
   .burner span:last-child {
-    bottom: 8px;
     font-size: 0.86rem;
     white-space: nowrap;
   }
@@ -1270,8 +1331,18 @@ h1 {
     grid-template-columns: 1fr;
   }
 
-  .pot {
-    width: min(280px, 100%);
+  .cookware-stage {
+    width: min(320px, 100%);
+  }
+
+  .pot-contents-overlay {
+    right: 14%;
+    left: 14%;
+  }
+
+  .pot-contents {
+    min-height: 58px;
+    font-size: 0.7rem;
   }
 
   .ingredients-panel {
