@@ -488,6 +488,7 @@ function endGame(reason) {
   setControlsEnabled(false);
   updateBurnerText();
   updateDisplay();
+  playEndGameSound(reason);
 
   elements.resultText.textContent = `${reason}! 최종 성공 포장 수는 ${state.score}개입니다.`;
   elements.rankingSaveMessage.textContent = "닉네임을 입력하고 기록을 저장할 수 있습니다.";
@@ -624,8 +625,96 @@ function playButtonSound(event) {
     return;
   }
 
+  if (button === elements.packButton) {
+    playPlasticCrinkleSound();
+    return;
+  }
+
   playTone(740, 0.045, state.sfxGain, "square", 0.08);
   window.setTimeout(() => playTone(980, 0.04, state.sfxGain, "sine", 0.06), 35);
+}
+
+function playPlasticCrinkleSound() {
+  if (!state.audioContext || !state.sfxGain) {
+    return;
+  }
+
+  const bursts = [
+    { delay: 0, duration: 0.035, volume: 0.16, frequency: 2600 },
+    { delay: 28, duration: 0.026, volume: 0.12, frequency: 4200 },
+    { delay: 58, duration: 0.03, volume: 0.14, frequency: 3300 },
+    { delay: 96, duration: 0.022, volume: 0.1, frequency: 5200 }
+  ];
+
+  bursts.forEach((burst) => {
+    window.setTimeout(() => {
+      playNoiseBurst(burst.duration, burst.volume, burst.frequency);
+    }, burst.delay);
+  });
+}
+
+function playEndGameSound(reason) {
+  setupAudio();
+
+  if (!state.audioContext || !state.sfxGain) {
+    return;
+  }
+
+  if (reason === "목숨 소진") {
+    playLifeDepletedSound();
+    return;
+  }
+
+  if (reason === "시간 종료") {
+    playTimeUpSound();
+  }
+}
+
+function playLifeDepletedSound() {
+  playTone(220, 0.18, state.sfxGain, "sawtooth", 0.12);
+  window.setTimeout(() => playTone(165, 0.2, state.sfxGain, "sawtooth", 0.11), 150);
+  window.setTimeout(() => playTone(110, 0.28, state.sfxGain, "triangle", 0.1), 320);
+}
+
+function playTimeUpSound() {
+  playTone(880, 0.12, state.sfxGain, "square", 0.1);
+  window.setTimeout(() => playTone(880, 0.12, state.sfxGain, "square", 0.1), 180);
+  window.setTimeout(() => playTone(660, 0.24, state.sfxGain, "triangle", 0.12), 380);
+}
+
+function playNoiseBurst(duration, volume, filterFrequency) {
+  const context = state.audioContext;
+
+  if (!context || !state.sfxGain) {
+    return;
+  }
+
+  const sampleCount = Math.max(1, Math.floor(context.sampleRate * duration));
+  const buffer = context.createBuffer(1, sampleCount, context.sampleRate);
+  const data = buffer.getChannelData(0);
+
+  for (let index = 0; index < sampleCount; index += 1) {
+    const progress = index / sampleCount;
+    data[index] = (Math.random() * 2 - 1) * (1 - progress);
+  }
+
+  const source = context.createBufferSource();
+  const filter = context.createBiquadFilter();
+  const gain = context.createGain();
+  const now = context.currentTime;
+
+  filter.type = "highpass";
+  filter.frequency.setValueAtTime(filterFrequency, now);
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.exponentialRampToValueAtTime(volume, now + 0.006);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+  source.buffer = buffer;
+  source.connect(filter);
+  filter.connect(gain);
+  gain.connect(state.sfxGain);
+  source.start(now);
+  source.stop(now + duration + 0.02);
 }
 
 function playTone(frequency, duration, outputGain, type = "sine", volume = 0.1) {
