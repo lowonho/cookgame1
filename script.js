@@ -397,7 +397,7 @@ function renderWaitingOrder() {
 function renderOrderQueue() {
   elements.orderQueue.innerHTML = "";
 
-  state.orders.slice(1, 5).forEach((order) => {
+  state.orders.slice(1, 4).forEach((order) => {
     const chip = document.createElement("span");
     chip.className = "order-chip";
     chip.appendChild(createOrderLabel(order));
