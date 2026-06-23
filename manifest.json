@@ -1,0 +1,25 @@
+{
+  "name": "찌개집 막내아들",
+  "short_name": "찌개막내",
+  "description": "1분 안에 찌개 주문을 최대한 많이 처리하는 캐주얼 조리 게임",
+  "lang": "ko-KR",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fff7ed",
+  "theme_color": "#e84d2a",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
