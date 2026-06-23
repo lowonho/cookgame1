@@ -466,9 +466,10 @@ function renderPotContents() {
     return;
   }
 
-  state.selectedIngredients.forEach((ingredientId) => {
+  state.selectedIngredients.forEach((ingredientId, index) => {
     const item = document.createElement("span");
     item.className = "pot-ingredient";
+    item.dataset.slot = String(index + 1);
     item.title = getIngredientName(ingredientId);
     item.setAttribute("aria-label", getIngredientName(ingredientId));
 
@@ -476,7 +477,11 @@ function renderPotContents() {
     name.className = "pot-ingredient-name";
     name.textContent = getIngredientName(ingredientId);
 
-    item.appendChild(createIngredientVisual(ingredientId));
+    const icon = document.createElement("span");
+    icon.className = "pot-ingredient-icon";
+    icon.appendChild(createIngredientVisual(ingredientId));
+
+    item.appendChild(icon);
     item.appendChild(name);
     elements.potContents.appendChild(item);
   });
@@ -780,10 +785,10 @@ function playPlasticCrinkleSound() {
   }
 
   const bursts = [
-    { delay: 0, duration: 0.035, volume: 0.25, frequency: 2600 },
-    { delay: 28, duration: 0.026, volume: 0.2, frequency: 4200 },
-    { delay: 58, duration: 0.03, volume: 0.22, frequency: 3300 },
-    { delay: 96, duration: 0.022, volume: 0.17, frequency: 5200 }
+    { delay: 0, duration: 0.04, volume: 0.42, frequency: 2500 },
+    { delay: 28, duration: 0.032, volume: 0.34, frequency: 4200 },
+    { delay: 62, duration: 0.035, volume: 0.38, frequency: 3300 },
+    { delay: 104, duration: 0.028, volume: 0.3, frequency: 5200 }
   ];
 
   bursts.forEach((burst) => {
@@ -791,6 +796,8 @@ function playPlasticCrinkleSound() {
       playNoiseBurst(burst.duration, burst.volume, burst.frequency);
     }, burst.delay);
   });
+
+  playTone(1120, 0.035, state.sfxGain, "square", 0.12);
 }
 
 function playEndGameSound(reason) {

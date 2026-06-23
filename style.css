@@ -698,24 +698,21 @@ h1 {
 
 .pot-contents-overlay {
   position: absolute;
-  top: 22%;
-  right: 22%;
-  left: 22%;
+  top: 18%;
+  right: 24%;
+  left: 24%;
   z-index: 3;
   display: grid;
-  min-height: 24%;
+  min-height: 26%;
   place-items: center;
   pointer-events: none;
 }
 
 .pot-contents {
   position: relative;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 7px 8px;
-  align-content: center;
+  display: block;
   width: 100%;
-  min-height: 126px;
+  min-height: 118px;
   color: #fff7ed;
   text-align: center;
   text-shadow: 0 1px 3px rgba(47, 31, 22, 0.45);
@@ -756,28 +753,44 @@ h1 {
 }
 
 .pot-ingredient {
+  position: absolute;
+  top: 50%;
+  left: 50%;
   display: inline-flex;
-  min-width: 0;
-  min-height: 36px;
+  width: 76px;
+  min-height: 28px;
   align-items: center;
-  gap: 5px;
-  padding: 3px 8px 3px 4px;
+  justify-content: center;
+  gap: 4px;
+  padding: 2px 7px 2px 4px;
   border: 1px solid rgba(47, 31, 22, 0.1);
   border-radius: 999px;
   background: rgba(255, 250, 245, 0.92);
   color: var(--text);
   filter: drop-shadow(0 5px 8px rgba(0, 0, 0, 0.24));
-  font-size: 0.76rem;
+  font-size: 0.68rem;
   font-weight: 900;
   text-shadow: none;
+  transform: translate(-50%, -50%);
 }
 
-.pot-ingredient .ingredient-visual {
-  flex: 0 0 30px;
-  width: 30px;
-  height: 30px;
+.pot-ingredient-icon {
+  display: grid;
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  overflow: visible;
+}
+
+.pot-ingredient-icon .ingredient-visual {
+  flex: none;
+  width: 42px;
+  height: 42px;
   border-color: rgba(47, 31, 22, 0.12);
-  box-shadow: inset 0 -4px 8px rgba(47, 31, 22, 0.1);
+  box-shadow: inset 0 -6px 10px rgba(47, 31, 22, 0.08);
+  transform: scale(0.57);
+  transform-origin: center;
 }
 
 .pot-ingredient-name {
@@ -788,17 +801,51 @@ h1 {
 }
 
 .pot-ingredient:only-child {
-  min-width: 118px;
-  grid-column: 1 / -1;
-  justify-self: center;
+  left: 50%;
+}
+
+.pot-ingredient[data-slot="1"] {
+  left: 35%;
+  top: 43%;
+}
+
+.pot-ingredient[data-slot="2"] {
+  left: 65%;
+  top: 43%;
+}
+
+.pot-ingredient[data-slot="3"] {
+  left: 35%;
+  top: 68%;
+}
+
+.pot-ingredient[data-slot="4"] {
+  left: 65%;
+  top: 68%;
+}
+
+.pot-ingredient[data-slot="5"] {
+  left: 50%;
+  top: 56%;
+}
+
+.pot-ingredient:only-child {
+  left: 50%;
+  top: 56%;
+}
+
+.burner-area {
+  display: grid;
+  grid-column: 2;
+  grid-row: 2;
+  justify-items: center;
+  gap: 8px;
 }
 
 .burner {
   position: relative;
   display: grid;
   grid-template-columns: 32px minmax(0, 1fr);
-  grid-column: 2;
-  grid-row: 2;
   gap: 8px;
   place-items: center;
   width: 184px;
@@ -823,9 +870,7 @@ h1 {
 }
 
 .burner-cooked-badge {
-  position: absolute;
-  top: -34px;
-  left: 50%;
+  position: static;
   z-index: 6;
   padding: 6px 10px;
   border-radius: 999px;
@@ -835,7 +880,6 @@ h1 {
   font-weight: 900;
   white-space: nowrap;
   box-shadow: 0 8px 18px rgba(47, 31, 22, 0.22);
-  transform: translateX(-50%);
 }
 
 .burner-top {
@@ -1145,7 +1189,7 @@ h1 {
 
   .kitchen-panel .order-panel,
   .pot-area,
-  .burner,
+  .burner-area,
   .action-row,
   .message {
     grid-column: 1;
@@ -1224,16 +1268,15 @@ h1 {
   }
 
   .pot-contents-overlay {
-    top: 22%;
-    right: 20%;
-    left: 20%;
+    top: 18%;
+    right: 21%;
+    left: 21%;
     min-height: 24%;
   }
 
   .pot-contents {
-    min-height: 82px;
-    gap: 5px;
-    font-size: 0.76rem;
+    min-height: 86px;
+    font-size: 0.64rem;
   }
 
   .pot-empty-message {
@@ -1242,16 +1285,22 @@ h1 {
   }
 
   .pot-ingredient {
-    min-height: 30px;
-    gap: 4px;
-    padding: 2px 6px 2px 3px;
-    font-size: 0.68rem;
+    min-height: 26px;
+    gap: 3px;
+    padding: 2px 5px 2px 3px;
+    font-size: 0.6rem;
   }
 
-  .pot-ingredient .ingredient-visual {
-    flex-basis: 26px;
-    width: 26px;
-    height: 26px;
+  .pot-ingredient-icon {
+    flex-basis: 21px;
+    width: 21px;
+    height: 21px;
+  }
+
+  .pot-ingredient-icon .ingredient-visual {
+    width: 42px;
+    height: 42px;
+    transform: scale(0.5);
   }
 
   .cookware-flame {
@@ -1406,19 +1455,25 @@ h1 {
   }
 
   .pot-contents {
-    min-height: 72px;
-    font-size: 0.7rem;
+    min-height: 76px;
+    font-size: 0.58rem;
   }
 
   .pot-ingredient {
-    min-height: 28px;
-    font-size: 0.64rem;
+    min-height: 24px;
+    font-size: 0.56rem;
   }
 
-  .pot-ingredient .ingredient-visual {
-    flex-basis: 24px;
-    width: 24px;
-    height: 24px;
+  .pot-ingredient-icon {
+    flex-basis: 19px;
+    width: 19px;
+    height: 19px;
+  }
+
+  .pot-ingredient-icon .ingredient-visual {
+    width: 42px;
+    height: 42px;
+    transform: scale(0.45);
   }
 
   .ingredients-panel {
