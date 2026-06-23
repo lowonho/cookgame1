@@ -20,7 +20,7 @@
           <button id="bgmToggleButton" class="subtle-button" type="button" aria-pressed="false">BGM OFF</button>
           <label class="volume-control" for="bgmVolume">
             <span>음악</span>
-            <input id="bgmVolume" type="range" min="0" max="100" value="45">
+            <input id="bgmVolume" type="range" min="0" max="100" value="32">
           </label>
         </div>
         <div class="status-board" aria-label="게임 상태">
@@ -134,6 +134,8 @@
     </div>
   </div>
 
+  <audio id="bgmSound" src="sounds/bgm.mp3" preload="auto" loop></audio>
+  <audio id="gasSound" src="sounds/gas.mp3" preload="auto"></audio>
   <script src="script.js"></script>
 </body>
 </html>

@@ -50,7 +50,7 @@ const state = {
   cookingLeft: 0,
   scoreSaved: false,
   bgmEnabled: false,
-  bgmVolume: 0.45,
+  bgmVolume: 0.32,
   audioContext: null,
   bgmGain: null,
   sfxGain: null,
@@ -74,6 +74,8 @@ const elements = {
   rankingButton: document.querySelector("#rankingButton"),
   bgmToggleButton: document.querySelector("#bgmToggleButton"),
   bgmVolume: document.querySelector("#bgmVolume"),
+  bgmSound: document.querySelector("#bgmSound"),
+  gasSound: document.querySelector("#gasSound"),
   clearPotButton: document.querySelector("#clearPotButton"),
   recipePanel: document.querySelector(".recipe-panel"),
   recipeToggleButton: document.querySelector("#recipeToggleButton"),
@@ -166,15 +168,19 @@ function startGame() {
   state.orders = createOrders(5);
   state.cookingLeft = 0;
   state.scoreSaved = false;
+  state.bgmEnabled = true;
 
   elements.resultModal.classList.add("hidden");
   elements.rankingModal.classList.add("hidden");
   elements.rankingSaveMessage.textContent = "";
   elements.nicknameInput.value = "";
   elements.saveRankingButton.disabled = false;
+  elements.bgmToggleButton.textContent = "BGM ON";
+  elements.bgmToggleButton.setAttribute("aria-pressed", "true");
   setControlsEnabled(true);
   setMessage("재료를 담고 포장합니다, 조리 주문은 버너로 끓인 뒤 포장하세요.");
   updateDisplay();
+  startBgm();
 
   state.timerId = window.setInterval(() => {
     state.timeLeft -= 1;
@@ -266,6 +272,7 @@ function startCooking() {
     return;
   }
 
+  playGasSound();
   state.cooked = true;
   state.cookingLeft = 0;
   elements.burnerButton.classList.add("active");
@@ -583,6 +590,10 @@ function disableBgm() {
 function updateBgmVolume() {
   state.bgmVolume = Number(elements.bgmVolume.value) / 100;
 
+  if (elements.bgmSound) {
+    elements.bgmSound.volume = state.bgmVolume;
+  }
+
   if (state.bgmGain) {
     state.bgmGain.gain.setTargetAtTime(state.bgmVolume, state.audioContext.currentTime, 0.03);
   }
@@ -612,6 +623,43 @@ function setupAudio() {
 }
 
 function startBgm() {
+  const sound = elements.bgmSound;
+
+  if (sound) {
+    sound.loop = true;
+    sound.volume = state.bgmVolume;
+
+    const playPromise = sound.play();
+
+    if (!playPromise || typeof playPromise.catch !== "function") {
+      return;
+    }
+
+    playPromise
+      .then(() => {
+        if (!state.bgmEnabled) {
+          return;
+        }
+
+        stopGeneratedBgm();
+      })
+      .catch(() => {
+        if (state.bgmEnabled) {
+          startGeneratedBgm();
+        }
+      });
+
+    return;
+  }
+
+  startGeneratedBgm();
+}
+
+function startGeneratedBgm() {
+  if (!state.bgmEnabled) {
+    return;
+  }
+
   setupAudio();
 
   if (!state.audioContext || state.bgmTimerId) {
@@ -623,6 +671,14 @@ function startBgm() {
 }
 
 function stopBgm() {
+  if (elements.bgmSound) {
+    elements.bgmSound.pause();
+  }
+
+  stopGeneratedBgm();
+}
+
+function stopGeneratedBgm() {
   if (state.bgmTimerId) {
     window.clearInterval(state.bgmTimerId);
   }
@@ -658,12 +714,33 @@ function playButtonSoundForButton(button) {
   }
 
   if (button === elements.burnerButton) {
-    playCookingSound();
     return;
   }
 
   playTone(740, 0.045, state.sfxGain, "square", 0.08);
   window.setTimeout(() => playTone(980, 0.04, state.sfxGain, "sine", 0.06), 35);
+}
+
+function playGasSound() {
+  const sound = elements.gasSound;
+
+  if (!sound) {
+    playCookingSound();
+    return;
+  }
+
+  sound.pause();
+  sound.currentTime = 0;
+  sound.volume = 0.42;
+
+  const playPromise = sound.play();
+
+  if (playPromise && typeof playPromise.catch === "function") {
+    playPromise.catch(() => {
+      setupAudio();
+      playCookingSound();
+    });
+  }
 }
 
 function playCookingSound() {
