@@ -488,6 +488,7 @@ function endGame(reason) {
   setControlsEnabled(false);
   updateBurnerText();
   updateDisplay();
+  disableBgm();
   playEndGameSound(reason);
 
   elements.resultText.textContent = `${reason}! 최종 성공 포장 수는 ${state.score}개입니다.`;
@@ -548,6 +549,13 @@ function toggleBgm() {
     return;
   }
 
+  stopBgm();
+}
+
+function disableBgm() {
+  state.bgmEnabled = false;
+  elements.bgmToggleButton.textContent = "BGM OFF";
+  elements.bgmToggleButton.setAttribute("aria-pressed", "false");
   stopBgm();
 }
 
