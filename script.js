@@ -35,14 +35,6 @@ const modeLabels = {
   raw: "비조리"
 };
 
-const potIngredientPositions = [
-  { x: 50, y: 58, rotation: -8, scale: 1.08 },
-  { x: 39, y: 50, rotation: 12, scale: 0.98 },
-  { x: 61, y: 49, rotation: -14, scale: 0.98 },
-  { x: 47, y: 42, rotation: 20, scale: 0.88 },
-  { x: 56, y: 65, rotation: 8, scale: 0.92 }
-];
-
 const state = {
   isPlaying: false,
   isCooking: false,
@@ -77,6 +69,7 @@ const elements = {
   cookwareStage: document.querySelector(".cookware-stage"),
   burnerButton: document.querySelector("#burnerButton"),
   burnerText: document.querySelector("#burnerText"),
+  cookedBadge: document.querySelector("#cookedBadge"),
   steam: document.querySelector("#steam"),
   packButton: document.querySelector("#packButton"),
   startButton: document.querySelector("#startButton"),
@@ -403,6 +396,7 @@ function updateDisplay() {
   renderOrderQueue();
   renderPotContents();
   syncIngredientButtons();
+  updateBurnerText();
   updateStartButtonVisibility();
 }
 
@@ -472,26 +466,20 @@ function renderPotContents() {
     return;
   }
 
-  state.selectedIngredients.forEach((ingredientId, index) => {
-    const position = potIngredientPositions[index % potIngredientPositions.length];
+  state.selectedIngredients.forEach((ingredientId) => {
     const item = document.createElement("span");
     item.className = "pot-ingredient";
     item.title = getIngredientName(ingredientId);
     item.setAttribute("aria-label", getIngredientName(ingredientId));
-    item.style.setProperty("--pot-x", `${position.x}%`);
-    item.style.setProperty("--pot-y", `${position.y}%`);
-    item.style.setProperty("--pot-rotation", `${position.rotation}deg`);
-    item.style.setProperty("--pot-scale", position.scale);
+
+    const name = document.createElement("span");
+    name.className = "pot-ingredient-name";
+    name.textContent = getIngredientName(ingredientId);
+
     item.appendChild(createIngredientVisual(ingredientId));
+    item.appendChild(name);
     elements.potContents.appendChild(item);
   });
-
-  if (state.cooked) {
-    const cookedBadge = document.createElement("span");
-    cookedBadge.className = "pot-cooked-badge";
-    cookedBadge.textContent = "조리 완료";
-    elements.potContents.appendChild(cookedBadge);
-  }
 }
 
 function syncIngredientButtons() {
@@ -516,12 +504,15 @@ function setControlsEnabled(enabled, options = {}) {
 }
 
 function updateBurnerText() {
+  elements.burnerButton.classList.toggle("cooked", state.isPlaying && state.cooked);
+  elements.cookedBadge.classList.toggle("hidden", !state.isPlaying || !state.cooked);
+
   if (state.isCooking) {
     elements.burnerText.textContent = `${state.cookingLeft}초 끓이는 중`;
     return;
   }
 
-  elements.burnerText.textContent = state.cooked ? "조리 완료" : "가스버너 켜기";
+  elements.burnerText.textContent = "가스버너 켜기";
 }
 
 function endGame(reason) {
@@ -789,10 +780,10 @@ function playPlasticCrinkleSound() {
   }
 
   const bursts = [
-    { delay: 0, duration: 0.035, volume: 0.16, frequency: 2600 },
-    { delay: 28, duration: 0.026, volume: 0.12, frequency: 4200 },
-    { delay: 58, duration: 0.03, volume: 0.14, frequency: 3300 },
-    { delay: 96, duration: 0.022, volume: 0.1, frequency: 5200 }
+    { delay: 0, duration: 0.035, volume: 0.25, frequency: 2600 },
+    { delay: 28, duration: 0.026, volume: 0.2, frequency: 4200 },
+    { delay: 58, duration: 0.03, volume: 0.22, frequency: 3300 },
+    { delay: 96, duration: 0.022, volume: 0.17, frequency: 5200 }
   ];
 
   bursts.forEach((burst) => {
@@ -826,9 +817,9 @@ function playLifeDepletedSound() {
 }
 
 function playTimeUpSound() {
-  playTone(880, 0.12, state.sfxGain, "square", 0.1);
-  window.setTimeout(() => playTone(880, 0.12, state.sfxGain, "square", 0.1), 180);
-  window.setTimeout(() => playTone(660, 0.24, state.sfxGain, "triangle", 0.12), 380);
+  playTone(880, 0.12, state.sfxGain, "square", 0.18);
+  window.setTimeout(() => playTone(880, 0.12, state.sfxGain, "square", 0.18), 180);
+  window.setTimeout(() => playTone(660, 0.24, state.sfxGain, "triangle", 0.2), 380);
 }
 
 function playNoiseBurst(duration, volume, filterFrequency) {
