@@ -48,7 +48,14 @@ const state = {
   timerId: null,
   cookingTimerId: null,
   cookingLeft: 0,
-  scoreSaved: false
+  scoreSaved: false,
+  bgmEnabled: false,
+  bgmVolume: 0.45,
+  audioContext: null,
+  bgmGain: null,
+  sfxGain: null,
+  bgmTimerId: null,
+  bgmStep: 0
 };
 
 const elements = {
@@ -65,6 +72,8 @@ const elements = {
   packButton: document.querySelector("#packButton"),
   startButton: document.querySelector("#startButton"),
   rankingButton: document.querySelector("#rankingButton"),
+  bgmToggleButton: document.querySelector("#bgmToggleButton"),
+  bgmVolume: document.querySelector("#bgmVolume"),
   clearPotButton: document.querySelector("#clearPotButton"),
   recipePanel: document.querySelector(".recipe-panel"),
   recipeToggleButton: document.querySelector("#recipeToggleButton"),
@@ -92,12 +101,15 @@ function bindEvents() {
   elements.startButton.addEventListener("click", startGame);
   elements.closeResultButton.addEventListener("click", closeResultModal);
   elements.rankingButton.addEventListener("click", openRankingModal);
+  elements.bgmToggleButton.addEventListener("click", toggleBgm);
+  elements.bgmVolume.addEventListener("input", updateBgmVolume);
   elements.closeRankingButton.addEventListener("click", closeRankingModal);
   elements.saveRankingButton.addEventListener("click", saveCurrentRanking);
   elements.clearPotButton.addEventListener("click", clearPot);
   elements.recipeToggleButton.addEventListener("click", toggleRecipePanel);
   elements.packButton.addEventListener("click", packCurrentOrder);
   elements.burnerButton.addEventListener("click", startCooking);
+  document.addEventListener("click", playButtonSound);
 }
 
 function renderIngredients() {
@@ -358,12 +370,28 @@ function renderCurrentOrder() {
   const order = state.orders[0];
 
   if (!state.isPlaying) {
-    elements.currentOrder.textContent = "게임 시작을 눌러주세요";
+    renderWaitingOrder();
     return;
   }
 
   elements.currentOrder.innerHTML = "";
   elements.currentOrder.appendChild(createOrderLabel(order));
+}
+
+function renderWaitingOrder() {
+  elements.currentOrder.innerHTML = "";
+
+  const wrapper = document.createElement("span");
+  wrapper.className = "waiting-order";
+
+  const firstLine = document.createElement("span");
+  firstLine.textContent = "게임 시작을";
+
+  const secondLine = document.createElement("span");
+  secondLine.textContent = "눌러주세요";
+
+  wrapper.append(firstLine, secondLine);
+  elements.currentOrder.appendChild(wrapper);
 }
 
 function renderOrderQueue() {
@@ -507,6 +535,120 @@ function closeRankingModal() {
 function closeResultModal() {
   elements.resultModal.classList.add("hidden");
   updateStartButtonVisibility();
+}
+
+function toggleBgm() {
+  state.bgmEnabled = !state.bgmEnabled;
+  elements.bgmToggleButton.textContent = state.bgmEnabled ? "BGM ON" : "BGM OFF";
+  elements.bgmToggleButton.setAttribute("aria-pressed", String(state.bgmEnabled));
+
+  if (state.bgmEnabled) {
+    startBgm();
+    return;
+  }
+
+  stopBgm();
+}
+
+function updateBgmVolume() {
+  state.bgmVolume = Number(elements.bgmVolume.value) / 100;
+
+  if (state.bgmGain) {
+    state.bgmGain.gain.setTargetAtTime(state.bgmVolume, state.audioContext.currentTime, 0.03);
+  }
+}
+
+function setupAudio() {
+  if (state.audioContext) {
+    if (state.audioContext.state === "suspended") {
+      state.audioContext.resume();
+    }
+    return;
+  }
+
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+
+  if (!AudioContext) {
+    return;
+  }
+
+  state.audioContext = new AudioContext();
+  state.bgmGain = state.audioContext.createGain();
+  state.sfxGain = state.audioContext.createGain();
+  state.bgmGain.gain.value = state.bgmVolume;
+  state.sfxGain.gain.value = 0.25;
+  state.bgmGain.connect(state.audioContext.destination);
+  state.sfxGain.connect(state.audioContext.destination);
+}
+
+function startBgm() {
+  setupAudio();
+
+  if (!state.audioContext || state.bgmTimerId) {
+    return;
+  }
+
+  playBgmStep();
+  state.bgmTimerId = window.setInterval(playBgmStep, 360);
+}
+
+function stopBgm() {
+  if (state.bgmTimerId) {
+    window.clearInterval(state.bgmTimerId);
+  }
+
+  state.bgmTimerId = null;
+}
+
+function playBgmStep() {
+  if (!state.audioContext || !state.bgmGain || !state.bgmEnabled) {
+    return;
+  }
+
+  const melody = [392, 494, 587, 494, 440, 523, 659, 523];
+  const frequency = melody[state.bgmStep % melody.length];
+  state.bgmStep += 1;
+  playTone(frequency, 0.16, state.bgmGain, "triangle", 0.08);
+}
+
+function playButtonSound(event) {
+  const button = event.target.closest("button");
+
+  if (!button || button.disabled) {
+    return;
+  }
+
+  setupAudio();
+
+  if (!state.audioContext || !state.sfxGain) {
+    return;
+  }
+
+  playTone(740, 0.045, state.sfxGain, "square", 0.08);
+  window.setTimeout(() => playTone(980, 0.04, state.sfxGain, "sine", 0.06), 35);
+}
+
+function playTone(frequency, duration, outputGain, type = "sine", volume = 0.1) {
+  const context = state.audioContext;
+
+  if (!context || !outputGain) {
+    return;
+  }
+
+  const now = context.currentTime;
+  const oscillator = context.createOscillator();
+  const gain = context.createGain();
+
+  oscillator.type = type;
+  oscillator.frequency.setValueAtTime(frequency, now);
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.exponentialRampToValueAtTime(volume, now + 0.015);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+  oscillator.connect(gain);
+  gain.connect(outputGain);
+  oscillator.start(now);
+  oscillator.stop(now + duration + 0.02);
 }
 
 function renderRankings() {

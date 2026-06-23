@@ -150,6 +150,13 @@ h1 {
   font-size: 1.45rem;
 }
 
+.waiting-order {
+  display: grid;
+  gap: 8px;
+  font-size: 0.82em;
+  line-height: 1.25;
+}
+
 .order-label {
   display: grid;
   gap: 5px;
@@ -200,6 +207,39 @@ h1 {
 
 .order-chip .order-label {
   gap: 4px;
+}
+
+.sound-panel {
+  display: grid;
+  grid-template-columns: auto minmax(150px, 1fr);
+  gap: 8px;
+  align-items: center;
+  width: min(100%, 310px);
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.sound-panel .subtle-button {
+  min-height: 34px;
+  padding: 0 12px;
+  white-space: nowrap;
+}
+
+.volume-control {
+  display: grid;
+  grid-template-columns: auto minmax(72px, 1fr);
+  gap: 8px;
+  align-items: center;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.volume-control input {
+  width: 100%;
+  accent-color: var(--primary);
 }
 
 .play-area {
@@ -930,6 +970,11 @@ h1 {
     min-height: 38px;
   }
 
+  .sound-panel {
+    width: 100%;
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
   .status-board,
   .play-area,
   .kitchen-panel {
@@ -1026,6 +1071,11 @@ h1 {
 
   #currentOrder {
     font-size: 1.28rem;
+  }
+
+  .waiting-order {
+    font-size: 0.76em;
+    gap: 5px;
   }
 
   .order-chip {
