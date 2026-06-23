@@ -630,8 +630,34 @@ function playButtonSound(event) {
     return;
   }
 
+  if (button === elements.burnerButton) {
+    playCookingSound();
+    return;
+  }
+
   playTone(740, 0.045, state.sfxGain, "square", 0.08);
   window.setTimeout(() => playTone(980, 0.04, state.sfxGain, "sine", 0.06), 35);
+}
+
+function playCookingSound() {
+  if (!state.audioContext || !state.sfxGain) {
+    return;
+  }
+
+  playNoiseBurst(0.045, 0.14, 1800);
+  playTone(180, 0.09, state.sfxGain, "sawtooth", 0.07);
+
+  const bubbleBursts = [
+    { delay: 80, duration: 0.035, volume: 0.06, frequency: 420 },
+    { delay: 145, duration: 0.03, volume: 0.05, frequency: 520 },
+    { delay: 220, duration: 0.04, volume: 0.055, frequency: 360 }
+  ];
+
+  bubbleBursts.forEach((burst) => {
+    window.setTimeout(() => {
+      playNoiseBurst(burst.duration, burst.volume, burst.frequency);
+    }, burst.delay);
+  });
 }
 
 function playPlasticCrinkleSound() {
