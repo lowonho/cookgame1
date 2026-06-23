@@ -51,6 +51,10 @@ button:disabled {
   padding: 28px 0;
 }
 
+.orientation-lock {
+  display: none;
+}
+
 .top-panel,
 .play-area {
   margin-bottom: 18px;
@@ -1515,5 +1519,362 @@ h1 {
     flex-basis: 30px;
     width: 30px;
     height: 30px;
+  }
+}
+
+@media (max-width: 840px) and (orientation: portrait) {
+  body {
+    min-height: 100dvh;
+    overflow: hidden;
+  }
+
+  .game-shell,
+  .modal {
+    display: none !important;
+  }
+
+  .orientation-lock {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 18px;
+    padding: 24px;
+    background: linear-gradient(180deg, #fff7ed 0%, #ffe4d1 100%);
+    color: var(--text);
+    text-align: center;
+  }
+
+  .orientation-lock strong {
+    font-size: 1.15rem;
+  }
+
+  .orientation-phone {
+    position: relative;
+    width: 94px;
+    height: 58px;
+    border: 8px solid #2f1f16;
+    border-radius: 18px;
+    background: #fffaf5;
+    box-shadow: 0 14px 30px rgba(47, 31, 22, 0.16);
+  }
+
+  .orientation-phone::after {
+    position: absolute;
+    right: -24px;
+    bottom: -18px;
+    width: 34px;
+    height: 34px;
+    border-right: 5px solid var(--primary);
+    border-bottom: 5px solid var(--primary);
+    border-radius: 0 0 22px;
+    content: "";
+  }
+}
+
+@media (max-width: 940px) and (orientation: landscape), (max-height: 520px) and (orientation: landscape) {
+  body {
+    min-height: 100dvh;
+    overflow: hidden;
+    background: linear-gradient(135deg, #fff7ed 0%, #ffe4d1 100%);
+  }
+
+  .orientation-lock {
+    display: none;
+  }
+
+  .game-shell {
+    width: min(100% - 12px, 1180px);
+    height: 100dvh;
+    padding: 6px 0;
+    overflow: hidden;
+  }
+
+  .top-panel {
+    display: grid;
+    grid-template-columns: minmax(128px, auto) minmax(0, 1fr);
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  .eyebrow {
+    display: none;
+  }
+
+  h1 {
+    font-size: clamp(1rem, 2.8vw, 1.45rem);
+    line-height: 1;
+  }
+
+  .top-actions {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 6px;
+    align-items: center;
+    justify-items: end;
+  }
+
+  .top-actions > .secondary-button {
+    min-height: 32px;
+    padding: 0 10px;
+    font-size: 0.76rem;
+  }
+
+  .sound-panel {
+    display: none;
+  }
+
+  .status-board {
+    grid-template-columns: repeat(3, minmax(52px, 1fr));
+    gap: 5px;
+    width: min(100%, 250px);
+  }
+
+  .status-item {
+    min-width: 0;
+    padding: 5px 6px;
+  }
+
+  .status-item span {
+    margin-bottom: 1px;
+    font-size: 0.62rem;
+  }
+
+  .status-item strong {
+    font-size: 0.98rem;
+  }
+
+  .play-area {
+    display: grid;
+    grid-template-columns: minmax(118px, 145px) minmax(310px, 1fr) minmax(180px, 220px);
+    gap: 8px;
+    align-items: stretch;
+    height: calc(100dvh - 58px);
+    margin-bottom: 0;
+    overflow: hidden;
+  }
+
+  .recipe-panel,
+  .kitchen-panel,
+  .ingredients-panel {
+    order: initial;
+    padding: 8px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(117, 67, 32, 0.11);
+  }
+
+  .recipe-panel {
+    grid-column: 1;
+  }
+
+  .ingredients-panel {
+    position: static;
+    grid-column: 3;
+    margin-inline: 0;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: none;
+  }
+
+  .panel-title {
+    margin-bottom: 6px;
+  }
+
+  .panel-title h2 {
+    font-size: 0.9rem;
+  }
+
+  .subtle-button,
+  .recipe-toggle-button {
+    min-height: 28px;
+    padding: 0 8px;
+    font-size: 0.7rem;
+  }
+
+  .recipe-grid {
+    gap: 6px;
+  }
+
+  .recipe-grid article {
+    padding: 7px;
+  }
+
+  .recipe-grid h3 {
+    margin-bottom: 3px;
+    font-size: 0.78rem;
+  }
+
+  .recipe-grid p {
+    font-size: 0.68rem;
+    line-height: 1.25;
+  }
+
+  .ingredients-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5px;
+  }
+
+  .ingredient-button {
+    min-height: 46px;
+    gap: 2px;
+    padding: 4px 2px;
+    font-size: 0.63rem;
+  }
+
+  .ingredient-visual {
+    flex-basis: 28px;
+    width: 28px;
+    height: 28px;
+  }
+
+  .kitchen-panel {
+    grid-column: 2;
+    display: grid;
+    grid-template-columns: minmax(92px, 116px) minmax(180px, 1fr) minmax(82px, 100px);
+    grid-template-rows: minmax(155px, 1fr) 60px auto;
+    gap: 6px;
+    min-height: 0;
+    align-items: center;
+    justify-items: center;
+  }
+
+  .kitchen-panel .order-panel {
+    grid-column: 1;
+    grid-row: 1 / span 3;
+    align-self: stretch;
+    padding: 7px;
+  }
+
+  .kitchen-panel .current-order {
+    padding: 8px;
+  }
+
+  #currentOrder {
+    font-size: 0.98rem;
+  }
+
+  .current-order .order-mode {
+    padding: 4px 7px;
+    font-size: 0.68rem;
+  }
+
+  .order-chip {
+    min-width: 72px;
+    padding: 6px;
+    font-size: 0.66rem;
+  }
+
+  .pot-area {
+    grid-column: 2;
+    grid-row: 1;
+    width: 100%;
+    min-height: 0;
+    padding-top: 0;
+  }
+
+  .cookware-stage {
+    width: min(300px, 100%);
+  }
+
+  .pot-contents-overlay {
+    top: 18%;
+    right: 8%;
+    left: 8%;
+    min-height: 24%;
+  }
+
+  .pot-contents {
+    min-height: 72px;
+    font-size: 0.54rem;
+  }
+
+  .pot-ingredient {
+    width: 84px;
+    min-height: 30px;
+    gap: 3px;
+    padding: 1px 5px 1px 2px;
+    font-size: 0.58rem;
+  }
+
+  .pot-ingredient-icon {
+    flex-basis: 28px;
+    width: 28px;
+    height: 28px;
+  }
+
+  .pot-ingredient-icon .ingredient-visual {
+    width: 42px;
+    height: 42px;
+    transform: scale(0.67);
+  }
+
+  .pot-ingredient[data-slot="1"],
+  .pot-ingredient[data-slot="3"] {
+    left: 27%;
+  }
+
+  .pot-ingredient[data-slot="2"],
+  .pot-ingredient[data-slot="4"] {
+    left: 73%;
+  }
+
+  .burner-area {
+    grid-column: 2;
+    grid-row: 2;
+    min-height: 58px;
+    align-content: end;
+  }
+
+  .burner-cooked-badge {
+    top: -8px;
+    padding: 4px 9px;
+    font-size: 0.72rem;
+  }
+
+  .burner {
+    grid-template-columns: 24px minmax(0, 1fr);
+    width: 158px;
+    height: 42px;
+    padding: 0 10px;
+  }
+
+  .burner-top {
+    width: 22px;
+    height: 22px;
+    border-width: 5px;
+  }
+
+  .burner span:last-child {
+    font-size: 0.78rem;
+  }
+
+  .action-row {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    gap: 7px;
+  }
+
+  .action-row .primary-button,
+  .action-row .secondary-button {
+    min-height: 42px;
+    padding: 0 6px;
+    font-size: 0.78rem;
+  }
+
+  .message {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    min-height: 0;
+    padding: 7px 9px;
+    font-size: 0.72rem;
+    white-space: nowrap;
   }
 }
