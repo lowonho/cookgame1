@@ -35,6 +35,14 @@ const modeLabels = {
   raw: "비조리"
 };
 
+const potIngredientPositions = [
+  { x: 50, y: 58, rotation: -8, scale: 1.08 },
+  { x: 39, y: 50, rotation: 12, scale: 0.98 },
+  { x: 61, y: 49, rotation: -14, scale: 0.98 },
+  { x: 47, y: 42, rotation: 20, scale: 0.88 },
+  { x: 56, y: 65, rotation: 8, scale: 0.92 }
+];
+
 const state = {
   isPlaying: false,
   isCooking: false,
@@ -66,6 +74,7 @@ const elements = {
   orderQueue: document.querySelector("#orderQueue"),
   ingredients: document.querySelector("#ingredients"),
   potContents: document.querySelector("#potContents"),
+  cookwareStage: document.querySelector(".cookware-stage"),
   burnerButton: document.querySelector("#burnerButton"),
   burnerText: document.querySelector("#burnerText"),
   steam: document.querySelector("#steam"),
@@ -276,6 +285,7 @@ function startCooking() {
   state.cooked = true;
   state.cookingLeft = 0;
   elements.burnerButton.classList.add("active");
+  elements.cookwareStage.classList.add("cooking");
   elements.steam.classList.add("active");
   updateBurnerText();
   setMessage("조리가 완료되었습니다. 이제 포장하세요.", "success");
@@ -283,6 +293,7 @@ function startCooking() {
   window.clearTimeout(state.cookingTimerId);
   state.cookingTimerId = window.setTimeout(() => {
     elements.burnerButton.classList.remove("active");
+    elements.cookwareStage.classList.remove("cooking");
     elements.steam.classList.remove("active");
     state.cookingTimerId = null;
   }, 450);
@@ -294,6 +305,7 @@ function finishCooking() {
   state.isCooking = false;
   state.cooked = true;
   elements.burnerButton.classList.remove("active");
+  elements.cookwareStage.classList.remove("cooking");
   elements.steam.classList.remove("active");
   setControlsEnabled(true);
   updateBurnerText();
@@ -450,29 +462,35 @@ function createOrderLabel(order) {
 }
 
 function renderPotContents() {
+  elements.potContents.innerHTML = "";
+
   if (state.selectedIngredients.length === 0) {
-    elements.potContents.textContent = "재료를 클릭해서 넣으세요";
+    const hint = document.createElement("span");
+    hint.className = "pot-empty-message";
+    hint.textContent = "재료를 넣으세요";
+    elements.potContents.appendChild(hint);
     return;
   }
 
-  elements.potContents.innerHTML = "";
-
-  state.selectedIngredients.forEach((ingredientId) => {
-    const tag = document.createElement("span");
-    tag.className = "pot-tag";
-
-    const name = document.createElement("span");
-    name.textContent = getIngredientName(ingredientId);
-
-    tag.append(createIngredientVisual(ingredientId), name);
-    elements.potContents.appendChild(tag);
+  state.selectedIngredients.forEach((ingredientId, index) => {
+    const position = potIngredientPositions[index % potIngredientPositions.length];
+    const item = document.createElement("span");
+    item.className = "pot-ingredient";
+    item.title = getIngredientName(ingredientId);
+    item.setAttribute("aria-label", getIngredientName(ingredientId));
+    item.style.setProperty("--pot-x", `${position.x}%`);
+    item.style.setProperty("--pot-y", `${position.y}%`);
+    item.style.setProperty("--pot-rotation", `${position.rotation}deg`);
+    item.style.setProperty("--pot-scale", position.scale);
+    item.appendChild(createIngredientVisual(ingredientId));
+    elements.potContents.appendChild(item);
   });
 
   if (state.cooked) {
-    const cookedTag = document.createElement("span");
-    cookedTag.className = "pot-tag";
-    cookedTag.textContent = "조리 완료";
-    elements.potContents.appendChild(cookedTag);
+    const cookedBadge = document.createElement("span");
+    cookedBadge.className = "pot-cooked-badge";
+    cookedBadge.textContent = "조리 완료";
+    elements.potContents.appendChild(cookedBadge);
   }
 }
 
@@ -512,6 +530,7 @@ function endGame(reason) {
   state.isCooking = false;
   state.pendingIngredients = [];
   elements.burnerButton.classList.remove("active");
+  elements.cookwareStage.classList.remove("cooking");
   elements.steam.classList.remove("active");
   setControlsEnabled(false);
   updateBurnerText();
