@@ -48,7 +48,7 @@ button:disabled {
 .game-shell {
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
-  padding: 28px 0;
+  padding: 18px 0;
 }
 
 .orientation-lock {
@@ -57,7 +57,7 @@ button:disabled {
 
 .top-panel,
 .play-area {
-  margin-bottom: 18px;
+  margin-bottom: 12px;
 }
 
 .top-panel {
@@ -265,7 +265,7 @@ h1 {
 .play-area {
   display: grid;
   grid-template-columns: 280px minmax(360px, 1fr);
-  gap: 18px;
+  gap: 12px;
   align-items: start;
 }
 
@@ -548,8 +548,8 @@ h1 {
   align-items: center;
   align-content: start;
   justify-items: center;
-  gap: 18px;
-  min-height: 480px;
+  gap: 12px;
+  min-height: 400px;
 }
 
 .kitchen-panel .order-panel {
@@ -578,8 +578,8 @@ h1 {
   grid-column: 2;
   grid-row: 1;
   place-items: center;
-  width: min(520px, 100%);
-  min-height: 350px;
+  width: min(450px, 100%);
+  min-height: 285px;
   padding-top: 4px;
 }
 
@@ -628,7 +628,7 @@ h1 {
 .cookware-stage {
   position: relative;
   display: grid;
-  width: min(520px, 100%);
+  width: min(450px, 100%);
   aspect-ratio: 1448 / 1086;
   place-items: center;
   isolation: isolate;
@@ -841,7 +841,7 @@ h1 {
   display: grid;
   grid-column: 2;
   grid-row: 2;
-  min-height: 118px;
+  min-height: 84px;
   align-content: end;
   justify-items: center;
 }
@@ -948,9 +948,9 @@ h1 {
 .message {
   grid-column: 1 / -1;
   width: min(980px, 100%);
-  min-height: 48px;
+  min-height: 40px;
   margin-bottom: 0;
-  padding: 12px 14px;
+  padding: 10px 12px;
   border-radius: 8px;
   background: #fff4d8;
   color: #794b14;
@@ -1894,7 +1894,7 @@ h1 {
     width: 1180px;
     height: auto;
     margin: 0;
-    padding: 28px 0;
+    padding: 18px 0;
     overflow: visible;
     transform: translate(-50%, -50%) scale(var(--landscape-scale, 0.5));
     transform-origin: center;
@@ -1905,7 +1905,7 @@ h1 {
     align-items: center;
     justify-content: space-between;
     gap: 20px;
-    margin-bottom: 18px;
+    margin-bottom: 12px;
   }
 
   .eyebrow {
@@ -1960,10 +1960,10 @@ h1 {
   .play-area {
     display: grid;
     grid-template-columns: 280px minmax(360px, 1fr);
-    gap: 18px;
+    gap: 12px;
     align-items: start;
     height: auto;
-    margin-bottom: 18px;
+    margin-bottom: 12px;
     overflow: visible;
   }
 
@@ -2058,8 +2058,8 @@ h1 {
     align-items: center;
     align-content: start;
     justify-items: center;
-    gap: 18px;
-    min-height: 480px;
+    gap: 12px;
+    min-height: 400px;
   }
 
   .kitchen-panel .order-panel {
@@ -2104,13 +2104,13 @@ h1 {
   .pot-area {
     grid-column: 2;
     grid-row: 1;
-    width: min(520px, 100%);
-    min-height: 350px;
+    width: min(450px, 100%);
+    min-height: 285px;
     padding-top: 4px;
   }
 
   .cookware-stage {
-    width: min(520px, 100%);
+    width: min(450px, 100%);
   }
 
   .pot-contents-overlay {
@@ -2171,7 +2171,7 @@ h1 {
   .burner-area {
     grid-column: 2;
     grid-row: 2;
-    min-height: 118px;
+    min-height: 84px;
     align-content: end;
   }
 
@@ -2219,8 +2219,8 @@ h1 {
     grid-column: 1 / -1;
     grid-row: auto;
     width: min(980px, 100%);
-    min-height: 48px;
-    padding: 12px 14px;
+    min-height: 40px;
+    padding: 10px 12px;
     font-size: 1.15rem;
     white-space: nowrap;
   }
