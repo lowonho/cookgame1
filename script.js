@@ -1053,5 +1053,39 @@ function registerServiceWorker() {
   });
 }
 
+function updateLandscapeScale() {
+  const shell = document.querySelector(".game-shell");
+  const shouldFit = window.matchMedia(
+    "(max-width: 940px) and (orientation: landscape), (max-height: 520px) and (orientation: landscape)"
+  ).matches;
+
+  if (!shell || !shouldFit) {
+    document.documentElement.style.removeProperty("--landscape-scale");
+    return;
+  }
+
+  const availableWidth = Math.max(1, window.innerWidth - 8);
+  const availableHeight = Math.max(1, window.innerHeight - 8);
+  const contentWidth = Math.max(1, shell.scrollWidth);
+  const contentHeight = Math.max(1, shell.scrollHeight);
+  const scale = Math.min(availableWidth / contentWidth, availableHeight / contentHeight, 1);
+
+  document.documentElement.style.setProperty("--landscape-scale", String(scale));
+}
+
+function bindLandscapeScale() {
+  updateLandscapeScale();
+  window.addEventListener("resize", updateLandscapeScale);
+  window.addEventListener("orientationchange", () => {
+    window.setTimeout(updateLandscapeScale, 120);
+  });
+
+  window.addEventListener("load", () => {
+    updateLandscapeScale();
+    window.setTimeout(updateLandscapeScale, 120);
+  });
+}
+
 init();
 registerServiceWorker();
+bindLandscapeScale();
