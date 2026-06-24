@@ -1,4 +1,4 @@
-const CACHE_NAME = "jjigae-maknae-v5";
+const CACHE_NAME = "jjigae-maknae-v6";
 
 const APP_ASSETS = [
   "./",

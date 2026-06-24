@@ -195,19 +195,62 @@ function startGame() {
 }
 
 function createOrders(count) {
-  return Array.from({ length: count }, createRandomOrder);
+  const orders = [];
+
+  for (let index = 0; index < count; index += 1) {
+    orders.push(createRandomOrder(orders));
+  }
+
+  return orders;
 }
 
-function createRandomOrder() {
-  const recipeIds = Object.keys(recipes);
-  const recipeId = recipeIds[Math.floor(Math.random() * recipeIds.length)];
-  const mode = Math.random() < 0.5 ? "cooked" : "raw";
+function createRandomOrder(existingOrders = state.orders) {
+  const candidates = Object.keys(recipes).flatMap((recipeId) =>
+    Object.keys(modeLabels).map((mode) => ({ recipeId, mode }))
+  );
+  const blockedKey = getBlockedRepeatOrderKey(existingOrders);
+  const blockedRecipeId = getBlockedRepeatRecipeId(existingOrders);
+  const availableCandidates = blockedKey
+    ? candidates.filter(
+        (candidate) =>
+          getOrderKey(candidate) !== blockedKey && candidate.recipeId !== blockedRecipeId
+      )
+    : candidates.filter((candidate) => candidate.recipeId !== blockedRecipeId);
+  const pool = availableCandidates.length > 0 ? availableCandidates : candidates;
+  const selected = pool[Math.floor(Math.random() * pool.length)];
 
   return {
-    recipeId,
-    mode,
-    id: `${recipeId}-${mode}-${Date.now()}-${Math.random()}`
+    recipeId: selected.recipeId,
+    mode: selected.mode,
+    id: `${selected.recipeId}-${selected.mode}-${Date.now()}-${Math.random()}`
   };
+}
+
+function getBlockedRepeatOrderKey(orders) {
+  const lastTwoOrders = orders.slice(-2);
+
+  if (lastTwoOrders.length < 2) {
+    return null;
+  }
+
+  const firstKey = getOrderKey(lastTwoOrders[0]);
+  const secondKey = getOrderKey(lastTwoOrders[1]);
+
+  return firstKey === secondKey ? firstKey : null;
+}
+
+function getBlockedRepeatRecipeId(orders) {
+  const lastTwoOrders = orders.slice(-2);
+
+  if (lastTwoOrders.length < 2) {
+    return null;
+  }
+
+  return lastTwoOrders[0].recipeId === lastTwoOrders[1].recipeId ? lastTwoOrders[0].recipeId : null;
+}
+
+function getOrderKey(order) {
+  return `${order.recipeId}-${order.mode}`;
 }
 
 async function addIngredient(ingredientId, sourceButton) {
@@ -326,7 +369,7 @@ function packCurrentOrder() {
   if (result.ok) {
     state.score += 1;
     state.orders.shift();
-    state.orders.push(createRandomOrder());
+    state.orders.push(createRandomOrder(state.orders));
     resetPot();
     setMessage("정확하게 포장했습니다. 다음 주문으로 이동합니다!", "success");
   } else {
@@ -1068,7 +1111,7 @@ function updateLandscapeScale() {
   const availableHeight = Math.max(1, window.innerHeight - 8);
   const contentWidth = Math.max(1, shell.scrollWidth);
   const contentHeight = Math.max(1, shell.scrollHeight);
-  const scale = Math.min(availableWidth / contentWidth, availableHeight / contentHeight, 1);
+  const scale = Math.min(availableWidth / contentWidth, availableHeight / contentHeight, 1.24);
 
   document.documentElement.style.setProperty("--landscape-scale", String(scale));
 }
